@@ -13,16 +13,20 @@ import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
     ArrowLeft,
+    Building2,
     Calendar,
     CheckCircle,
     ChevronRight,
     CreditCard,
+    Heart,
     Mail,
     MapPin,
     Shield,
     Star,
     Stethoscope,
-    User
+    User,
+    Wallet,
+    Zap
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -657,6 +661,33 @@ export default function BookPage() {
     },
   };
 
+  const paymentCardVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 200,
+        damping: 20,
+      },
+    },
+  };
+
+  const paymentOptionVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 25,
+      },
+    },
+  };
+
   return (
     <div className="h-full flex flex-col -m-6">
       {/* Fixed Header with Steps */}
@@ -1003,260 +1034,432 @@ export default function BookPage() {
             </Card>
 
             {/* Payment Options */}
-            <Card className="border border-border rounded-xl">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2 text-primary" />
-                  Payment Options
-                </CardTitle>
-                <p className="text-muted-foreground">Choose how you'd like to pay for your appointment</p>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup value={selectedPaymentMethod}>
-                  <div className="space-y-4">
-                    {mockPaymentOptions.map((option) => (
-                      <div
-                        key={option.id}
-                        className={`flex items-start space-x-3 p-4 border rounded-lg transition-all cursor-pointer ${
-                          selectedPaymentMethod === option.id
-                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                            : 'border-border hover:bg-muted/50 hover:border-primary/50'
-                        }`}
-                        onClick={() => {
-                          console.log('Setting payment method to:', option.id);
-                          setSelectedPaymentMethod(option.id);
-                          // Clear credit card details when switching away from credit card
-                          if (option.id !== 'credit-card') {
-                            setCreditCardDetails({
-                              cardNumber: '',
-                              expiryDate: '',
-                              cvv: '',
-                              cardholderName: '',
-                            });
+            <motion.div
+              variants={paymentCardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="border border-border rounded-xl">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-lg">
+                    <motion.div
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                    >
+                      <CreditCard className="h-5 w-5 mr-2 text-primary" />
+                    </motion.div>
+                    Payment Options
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Choose how you'd like to pay for your appointment</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <RadioGroup value={selectedPaymentMethod}>
+                    <div className="space-y-3">
+                      {mockPaymentOptions.map((option, index) => {
+                        const getIcon = (id: string) => {
+                          switch (id) {
+                            case 'hsa': return <Building2 className="h-5 w-5 text-blue-600" />;
+                            case 'wellness': return <Heart className="h-5 w-5 text-pink-600" />;
+                            case 'credit-card': return <CreditCard className="h-5 w-5 text-purple-600" />;
+                            default: return <Wallet className="h-5 w-5 text-green-600" />;
                           }
-                        }}
-                      >
-                        <RadioGroupItem value={option.id} id={option.id} className="mt-1" />
-                        <div className="flex-1">
-                          <Label
-                            htmlFor={option.id}
-                            className="text-base font-medium cursor-pointer text-foreground"
+                        };
+
+                        return (
+                          <motion.div
+                            key={option.id}
+                            variants={paymentOptionVariants}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ delay: index * 0.1 }}
+                            className={`flex items-start space-x-4 p-4 border rounded-xl transition-all cursor-pointer group ${
+                              selectedPaymentMethod === option.id
+                                ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                                : 'border-border hover:bg-muted/50 hover:border-primary/50'
+                            }`}
+                            onClick={() => {
+                              console.log('Setting payment method to:', option.id);
+                              setSelectedPaymentMethod(option.id);
+                              // Clear credit card details when switching away from credit card
+                              if (option.id !== 'credit-card') {
+                                setCreditCardDetails({
+                                  cardNumber: '',
+                                  expiryDate: '',
+                                  cvv: '',
+                                  cardholderName: '',
+                                });
+                              }
+                            }}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
-                            {option.name}
-                          </Label>
-                          {option.amount && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {option.amount} {option.covered && `| Covered: ${option.covered}`}
-                            </p>
-                          )}
-                          <p className="text-sm text-muted-foreground mt-2">{option.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
+                            <RadioGroupItem value={option.id} id={option.id} className="mt-1" />
+                            <motion.div
+                              className="flex items-center space-x-3"
+                              animate={selectedPaymentMethod === option.id ? { scale: [1, 1.1, 1] } : {}}
+                              transition={{ duration: 0.3 }}
+                            >
+                              {getIcon(option.id)}
+                            </motion.div>
+                            <div className="flex-1 min-w-0">
+                              <Label
+                                htmlFor={option.id}
+                                className="text-base font-semibold cursor-pointer text-foreground block"
+                              >
+                                {option.name}
+                              </Label>
+                              {option.amount && (
+                                <p className="text-sm text-muted-foreground mt-1 font-medium">
+                                  {option.amount} {option.covered && `• Covered: ${option.covered}`}
+                                </p>
+                              )}
+                              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{option.description}</p>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </RadioGroup>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* Credit Card Form */}
             {selectedPaymentMethod === 'credit-card' && (
-              <Card className="border border-border rounded-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <CreditCard className="h-5 w-5 mr-2 text-primary" />
-                    Credit Card Details
-                  </CardTitle>
-                  <p className="text-muted-foreground">Enter your credit card information</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="cardholderName">Cardholder Name</Label>
-                      <Input
-                        id="cardholderName"
-                        placeholder="John Doe"
-                        value={creditCardDetails.cardholderName}
-                        onChange={(e) => setCreditCardDetails(prev => ({
-                          ...prev,
-                          cardholderName: e.target.value
-                        }))}
-                        className="mt-1"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="cardNumber">Card Number</Label>
-                      <Input
-                        id="cardNumber"
-                        placeholder="1234 5678 9012 3456"
-                        value={creditCardDetails.cardNumber}
-                        onChange={(e) => setCreditCardDetails(prev => ({
-                          ...prev,
-                          cardNumber: formatCardNumber(e.target.value)
-                        }))}
-                        maxLength={19}
-                        className="mt-1"
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="expiryDate">Expiry Date</Label>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <Card className="border border-border rounded-xl">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center text-lg">
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                      >
+                        <CreditCard className="h-5 w-5 mr-2 text-primary" />
+                      </motion.div>
+                      Credit Card Details
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Enter your credit card information</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-6">
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Label htmlFor="cardholderName" className="text-sm font-medium">Cardholder Name</Label>
                         <Input
-                          id="expiryDate"
-                          placeholder="MM/YY"
-                          value={creditCardDetails.expiryDate}
+                          id="cardholderName"
+                          placeholder="John Doe"
+                          value={creditCardDetails.cardholderName}
                           onChange={(e) => setCreditCardDetails(prev => ({
                             ...prev,
-                            expiryDate: formatExpiryDate(e.target.value)
+                            cardholderName: e.target.value
                           }))}
-                          maxLength={5}
-                          className="mt-1"
+                          className="mt-2 h-11"
                         />
-                      </div>
+                      </motion.div>
                       
-                      <div>
-                        <Label htmlFor="cvv">CVV</Label>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Label htmlFor="cardNumber" className="text-sm font-medium">Card Number</Label>
                         <Input
-                          id="cvv"
-                          placeholder="123"
-                          value={creditCardDetails.cvv}
+                          id="cardNumber"
+                          placeholder="1234 5678 9012 3456"
+                          value={creditCardDetails.cardNumber}
                           onChange={(e) => setCreditCardDetails(prev => ({
                             ...prev,
-                            cvv: e.target.value.replace(/\D/g, '').slice(0, 4)
+                            cardNumber: formatCardNumber(e.target.value)
                           }))}
-                          maxLength={4}
-                          className="mt-1"
+                          maxLength={19}
+                          className="mt-2 h-11"
                         />
-                      </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        className="grid grid-cols-2 gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <div>
+                          <Label htmlFor="expiryDate" className="text-sm font-medium">Expiry Date</Label>
+                          <Input
+                            id="expiryDate"
+                            placeholder="MM/YY"
+                            value={creditCardDetails.expiryDate}
+                            onChange={(e) => setCreditCardDetails(prev => ({
+                              ...prev,
+                              expiryDate: formatExpiryDate(e.target.value)
+                            }))}
+                            maxLength={5}
+                            className="mt-2 h-11"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="cvv" className="text-sm font-medium">CVV</Label>
+                          <Input
+                            id="cvv"
+                            placeholder="123"
+                            value={creditCardDetails.cvv}
+                            onChange={(e) => setCreditCardDetails(prev => ({
+                              ...prev,
+                              cvv: e.target.value.replace(/\D/g, '').slice(0, 4)
+                            }))}
+                            maxLength={4}
+                            className="mt-2 h-11"
+                          />
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        className="bg-muted/50 p-4 rounded-xl border border-border/50"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <p className="text-sm text-muted-foreground flex items-center">
+                          <motion.div
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                          >
+                            <Shield className="h-4 w-4 mr-2 text-green-600" />
+                          </motion.div>
+                          Your payment information is secure and encrypted.
+                        </p>
+                      </motion.div>
                     </div>
-                    
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-sm text-muted-foreground">
-                        <Shield className="h-4 w-4 inline mr-1" />
-                        Your payment information is secure and encrypted.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             )}
 
             {/* Remaining Balance Payment */}
-            <Card className="border border-border rounded-xl">
-              <CardHeader>
-                <CardTitle>Remaining Balance - Payment Options</CardTitle>
-                <p className="text-muted-foreground">Choose how to pay the remaining $25.80</p>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup value={selectedRemainingPayment}>
-                  <div className="space-y-3">
-                    <div 
-                      className={`flex items-center space-x-3 p-3 border rounded-lg transition-all cursor-pointer ${
-                        selectedRemainingPayment === 'hsa-remaining'
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                          : 'border-border hover:bg-muted/50 hover:border-primary/50'
-                      }`}
-                      onClick={() => setSelectedRemainingPayment('hsa-remaining')}
+            <motion.div
+              variants={paymentCardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="border border-border rounded-xl">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-lg">
+                    <motion.div
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
                     >
-                      <RadioGroupItem value="hsa-remaining" id="hsa-remaining" />
-                      <Label htmlFor="hsa-remaining" className="cursor-pointer text-foreground flex-1">
-                        Health Spending Account (HSA) - $1,500.00 | Covered: $25.80
-                      </Label>
+                      <Zap className="h-5 w-5 mr-2 text-primary" />
+                    </motion.div>
+                    Remaining Balance Payment
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm">Choose how to pay the remaining $25.80</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <RadioGroup value={selectedRemainingPayment}>
+                    <div className="space-y-3">
+                      <motion.div
+                        variants={paymentOptionVariants}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.1 }}
+                        className={`flex items-center space-x-4 p-4 border rounded-xl transition-all cursor-pointer group ${
+                          selectedRemainingPayment === 'hsa-remaining'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border hover:bg-muted/50 hover:border-primary/50'
+                        }`}
+                        onClick={() => setSelectedRemainingPayment('hsa-remaining')}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <RadioGroupItem value="hsa-remaining" id="hsa-remaining" />
+                        <motion.div
+                          animate={selectedRemainingPayment === 'hsa-remaining' ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Building2 className="h-5 w-5 text-blue-600" />
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <Label htmlFor="hsa-remaining" className="cursor-pointer text-foreground font-semibold block">
+                            Health Spending Account (HSA)
+                          </Label>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Available: $1,500.00 • Covered: $25.80
+                          </p>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        variants={paymentOptionVariants}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.2 }}
+                        className={`flex items-center space-x-4 p-4 border rounded-xl transition-all cursor-pointer group ${
+                          selectedRemainingPayment === 'wellness-remaining'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border hover:bg-muted/50 hover:border-primary/50'
+                        }`}
+                        onClick={() => setSelectedRemainingPayment('wellness-remaining')}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <RadioGroupItem value="wellness-remaining" id="wellness-remaining" />
+                        <motion.div
+                          animate={selectedRemainingPayment === 'wellness-remaining' ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Heart className="h-5 w-5 text-pink-600" />
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <Label htmlFor="wellness-remaining" className="cursor-pointer text-foreground font-semibold block">
+                            Wellness Spending Account (HSA)
+                          </Label>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Available: $300.00
+                          </p>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        variants={paymentOptionVariants}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.3 }}
+                        className={`flex items-center space-x-4 p-4 border rounded-xl transition-all cursor-pointer group ${
+                          selectedRemainingPayment === 'credit-remaining'
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border hover:bg-muted/50 hover:border-primary/50'
+                        }`}
+                        onClick={() => setSelectedRemainingPayment('credit-remaining')}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <RadioGroupItem value="credit-remaining" id="credit-remaining" />
+                        <motion.div
+                          animate={selectedRemainingPayment === 'credit-remaining' ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CreditCard className="h-5 w-5 text-purple-600" />
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <Label htmlFor="credit-remaining" className="cursor-pointer text-foreground font-semibold block">
+                            Credit Card
+                          </Label>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Pay with your credit card
+                          </p>
+                        </div>
+                      </motion.div>
                     </div>
-                    <div 
-                      className={`flex items-center space-x-3 p-3 border rounded-lg transition-all cursor-pointer ${
-                        selectedRemainingPayment === 'wellness-remaining'
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                          : 'border-border hover:bg-muted/50 hover:border-primary/50'
-                      }`}
-                      onClick={() => setSelectedRemainingPayment('wellness-remaining')}
-                    >
-                      <RadioGroupItem value="wellness-remaining" id="wellness-remaining" />
-                      <Label htmlFor="wellness-remaining" className="cursor-pointer text-foreground flex-1">
-                        Wellness Spending Account (HSA) - $300.00
-                      </Label>
-                    </div>
-                    <div 
-                      className={`flex items-center space-x-3 p-3 border rounded-lg transition-all cursor-pointer ${
-                        selectedRemainingPayment === 'credit-remaining'
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                          : 'border-border hover:bg-muted/50 hover:border-primary/50'
-                      }`}
-                      onClick={() => setSelectedRemainingPayment('credit-remaining')}
-                    >
-                      <RadioGroupItem value="credit-remaining" id="credit-remaining" />
-                      <Label htmlFor="credit-remaining" className="cursor-pointer text-foreground flex-1">
-                        Credit Card
-                      </Label>
-                    </div>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>
+                  </RadioGroup>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* Credit Card Form for Remaining Balance */}
             {selectedRemainingPayment === 'credit-remaining' && (
-              <Card className="border border-border rounded-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <CreditCard className="h-5 w-5 mr-2 text-primary" />
-                    Credit Card Details for Remaining Balance
-                  </CardTitle>
-                  <p className="text-muted-foreground">Enter your credit card information to pay the remaining $25.80</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="remainingCardholderName">Cardholder Name</Label>
-                      <Input
-                        id="remainingCardholderName"
-                        placeholder="John Doe"
-                        className="mt-1"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="remainingCardNumber">Card Number</Label>
-                      <Input
-                        id="remainingCardNumber"
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                        className="mt-1"
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="remainingExpiryDate">Expiry Date</Label>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <Card className="border border-border rounded-xl">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center text-lg">
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                      >
+                        <CreditCard className="h-5 w-5 mr-2 text-primary" />
+                      </motion.div>
+                      Credit Card Details for Remaining Balance
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Enter your credit card information to pay the remaining $25.80</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-6">
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Label htmlFor="remainingCardholderName" className="text-sm font-medium">Cardholder Name</Label>
                         <Input
-                          id="remainingExpiryDate"
-                          placeholder="MM/YY"
-                          maxLength={5}
-                          className="mt-1"
+                          id="remainingCardholderName"
+                          placeholder="John Doe"
+                          className="mt-2 h-11"
                         />
-                      </div>
+                      </motion.div>
                       
-                      <div>
-                        <Label htmlFor="remainingCvv">CVV</Label>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Label htmlFor="remainingCardNumber" className="text-sm font-medium">Card Number</Label>
                         <Input
-                          id="remainingCvv"
-                          placeholder="123"
-                          maxLength={4}
-                          className="mt-1"
+                          id="remainingCardNumber"
+                          placeholder="1234 5678 9012 3456"
+                          maxLength={19}
+                          className="mt-2 h-11"
                         />
-                      </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        className="grid grid-cols-2 gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <div>
+                          <Label htmlFor="remainingExpiryDate" className="text-sm font-medium">Expiry Date</Label>
+                          <Input
+                            id="remainingExpiryDate"
+                            placeholder="MM/YY"
+                            maxLength={5}
+                            className="mt-2 h-11"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="remainingCvv" className="text-sm font-medium">CVV</Label>
+                          <Input
+                            id="remainingCvv"
+                            placeholder="123"
+                            maxLength={4}
+                            className="mt-2 h-11"
+                          />
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        className="bg-muted/50 p-4 rounded-xl border border-border/50"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <p className="text-sm text-muted-foreground flex items-center">
+                          <motion.div
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                          >
+                            <Shield className="h-4 w-4 mr-2 text-green-600" />
+                          </motion.div>
+                          Your payment information is secure and encrypted.
+                        </p>
+                      </motion.div>
                     </div>
-                    
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-sm text-muted-foreground">
-                        <Shield className="h-4 w-4 inline mr-1" />
-                        Your payment information is secure and encrypted.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             )}
           </div>
         )}

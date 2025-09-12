@@ -30,7 +30,7 @@ interface Notification {
   timestamp: Date;
   read: boolean;
   priority: Priority;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   action: string;
 }
 
@@ -160,9 +160,9 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Notifications</h1>
-          <p className="text-muted-foreground">
+      <div>
+        <h1 className="text-3xl font-bold">Notifications</h1>
+        <p className="text-muted-foreground">
             Stay updated with your healthcare activities
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function NotificationsPage() {
                 key={key}
                 variant={filter === key ? "default" : "outline"}
                 size="sm"
-                onClick={() => setFilter(key as any)}
+                onClick={() => setFilter(key as 'all' | 'appointment' | 'payment' | 'system')}
                 className="h-8"
               >
                 {label}
