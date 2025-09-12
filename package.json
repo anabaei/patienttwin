@@ -1,0 +1,18 @@
+{
+  "name": "twinnlinks-patient-portal",
+  "version": "1.0.0",
+  "description": "TwinnLinks Patient Portal - Healthcare booking and appointment management",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter patient-portal dev",
+    "build": "pnpm --filter patient-portal build",
+    "storybook": "pnpm --filter patient-portal storybook",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check"
+  },
+  "keywords": ["healthcare", "booking", "patient-portal", "nextjs"],
+  "author": "TwinnLinks",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0"
+}

@@ -162,6 +162,7 @@
 - **Existing Patterns**: Establish App Router pages under `app/` with nested layouts.
 - **Required Changes**: Create `packages/store` with Zustand slices and mock data aligned to Prisma shapes. Set up Tailwind, shadcn/ui, Framer Motion, Storybook.
 - **New Dependencies**: `zustand`, `zod`, `react-hook-form`, `framer-motion`, `classnames`, `date-fns`, `@radix-ui/react-*`, `storybook`, `next-themes`, `tailwindcss-animate`, `lucide-react` stack.
+- **Package Manager**: pnpm for fast, efficient dependency management and workspace support.
 - **Migration Path**: Later, replace `@twinn/store` with `@twinn/api`/React Query backed by Prisma models and services.
 
 ### Testing Strategy

@@ -7,6 +7,7 @@
 - State: Zustand in a separate package `@twinn/store` with slices per domain
 - Storybook for isolated UI development
 - Mobile-first responsive design with professional healthcare styling
+- Package Manager: pnpm for workspace management and efficient dependency resolution
 - Directory structure:
   - `app/(public)/sign-in/page.tsx`
   - `app/(protected)/dashboard/page.tsx`

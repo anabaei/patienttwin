@@ -36,5 +36,6 @@
     "next-themes",
     "tailwindcss-animate",
     "lucide-react"
-  ]
+  ],
+  "packageManager": "pnpm"
 }

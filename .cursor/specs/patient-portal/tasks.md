@@ -1,41 +1,41 @@
 # Patient Portal Booking Flow - Implementation Tasks
 
 ## Setup (20%)
-- [~] **[SET-001]** Initialize Next.js 15 app with TS, Tailwind, shadcn/ui, Framer Motion, Storybook
-  - [ ] Ontario dataset scaffold (addresses, lat/lng, postal codes)
-  - [ ] Mobile-first Tailwind config with healthcare color palette
-  - [ ] Theme switching setup (next-themes, light/dark modes)
-  - [ ] Professional button styles and mobile touch targets (44px min)
+- [x] **[SET-001]** Initialize Next.js 15 app with TS, Tailwind, shadcn/ui, Framer Motion, Storybook
+  - [x] Ontario dataset scaffold (addresses, lat/lng, postal codes)
+  - [x] Mobile-first Tailwind config with healthcare color palette
+  - [x] Theme switching setup (next-themes, light/dark modes)
+  - [x] Professional button styles and mobile touch targets (44px min)
   - **Estimate**: M
   - **Dependencies**: None
   - **Acceptance**: App runs, Tailwind configured, shadcn installed, Storybook starts, theme switching works
-- [ ] **[SET-002]** Create `packages/store` workspace and wiring
+- [x] **[SET-002]** Create `packages/store` workspace and wiring
   - **Estimate**: S
   - **Dependencies**: SET-001
   - **Acceptance**: Store package builds and can be imported from app
 
 ## Store (40%)
-- [ ] **[ST-001]** Define domain types and interfaces (User, Insurance, Directory, Appointment)
+- [x] **[ST-001]** Define domain types and interfaces (User, Insurance, Directory, Appointment)
   - **Estimate**: S
   - **Dependencies**: SET-002
   - **Acceptance**: Types exported; used in app
-- [ ] **[ST-002]** Implement Auth slice (mock sign-in/out with persistence)
+- [x] **[ST-002]** Implement Auth slice (mock sign-in/out with persistence)
   - **Estimate**: S
   - **Dependencies**: ST-001
   - **Acceptance**: User session persists and clears
-- [ ] **[ST-003]** Implement Insurance slice (providers/plans/mock connection)
+- [x] **[ST-003]** Implement Insurance slice (providers/plans/mock connection)
   - **Estimate**: M
   - **Dependencies**: ST-001
   - **Acceptance**: Plan selection and benefits summary works
-- [ ] **[ST-004]** Implement Directory slice (clinics, specialists, services, serviceOptions, search)
+- [x] **[ST-004]** Implement Directory slice (clinics, specialists, services, serviceOptions, search)
   - **Estimate**: M
   - **Dependencies**: ST-001
   - **Acceptance**: Search by location/service/in-network
-- [ ] **[ST-005]** Implement Availability and slot generation utilities
+- [x] **[ST-005]** Implement Availability and slot generation utilities
   - **Estimate**: M
   - **Dependencies**: ST-004
   - **Acceptance**: 2-week window slots available per specialist+clinic+serviceOption
-- [ ] **[ST-006]** Implement Appointments slice (book/cancel/reschedule) with coverage calculation
+- [x] **[ST-006]** Implement Appointments slice (book/cancel/reschedule) with coverage calculation
   - **Estimate**: M
   - **Dependencies**: ST-003, ST-005
   - **Acceptance**: Booking updates `Appointment` (Prisma-aligned fields) and pricing breakdown correct; create `Booking` record in store
