@@ -88,9 +88,9 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-full flex-col bg-card border-r border-border">
+    <div className="flex h-full flex-col bg-card border-r border-border overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-6">
+      <div className="flex items-center justify-between p-6 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-sm font-bold text-primary-foreground">T</span>
@@ -114,7 +114,7 @@ export function Sidebar() {
 
       {/* User Info */}
       {account && (
-        <div className="px-6 pb-4">
+        <div className="px-6 pb-4 flex-shrink-0">
           <div className="flex items-center space-x-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
               <User className="h-5 w-5 text-primary" />
@@ -134,7 +134,7 @@ export function Sidebar() {
       <Separator />
 
       {/* Main Navigation */}
-      <nav className="flex-1 px-4 py-4 space-y-1">
+      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
         {navigationItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -162,7 +162,7 @@ export function Sidebar() {
       <Separator />
 
       {/* Secondary Navigation */}
-      <nav className="px-4 py-4 space-y-1">
+      <nav className="px-4 py-4 space-y-1 flex-shrink-0">
         {secondaryItems.map((item) => {
           const isActive = pathname === item.href;
           const showNotificationBadge = item.name === "Notifications" && unreadNotificationsCount > 0;
@@ -202,7 +202,7 @@ export function Sidebar() {
       <Separator />
 
       {/* Theme Toggle */}
-      <div className="p-4">
+      <div className="p-4 flex-shrink-0">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground">Theme</span>
           <ThemeToggle />
@@ -212,7 +212,7 @@ export function Sidebar() {
       <Separator />
 
       {/* Sign Out */}
-      <div className="p-4">
+      <div className="p-4 flex-shrink-0">
         <Button
           variant="ghost"
           className="w-full justify-start space-x-3 text-muted-foreground hover:text-destructive"
