@@ -9,7 +9,6 @@ export type Gender = 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
 export type BookingSource = 'MANUAL' | 'ONLINE' | 'API' | 'IMPORT';
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'PAID' | 'REFUNDED' | 'CANCELLED';
 export type PaymentMethod = 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'CASH' | 'INSURANCE';
-
 // Core entities (aligned with Prisma models)
 export interface PatientAccount {
   id: string;
