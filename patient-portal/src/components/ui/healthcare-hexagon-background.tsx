@@ -22,11 +22,7 @@ export function HealthcareHexagonBackground({
       )}
       hexagonProps={{
         className: cn(
-          // Custom healthcare-themed hexagon styling
-          "before:bg-background/80 dark:before:bg-background/80",
-          "after:bg-background/60 dark:after:bg-background/60",
-          "hover:before:bg-primary/10 dark:hover:before:bg-primary/10",
-          "hover:after:bg-primary/5 dark:hover:after:bg-primary/5",
+          // Subtle healthcare-themed hexagon styling
           "transition-all duration-300 ease-in-out"
         )
       }}
