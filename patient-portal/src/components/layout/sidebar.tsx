@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -76,6 +78,9 @@ export function Sidebar() {
   const pathname = usePathname();
   const { account, signOut } = useAuthStore();
   const { setMobileMenuOpen } = useNavigationStore();
+  
+  // Mock unread notifications count
+  const unreadNotificationsCount = 2;
 
   const handleSignOut = () => {
     signOut();
@@ -160,6 +165,8 @@ export function Sidebar() {
       <nav className="px-4 py-4 space-y-1">
         {secondaryItems.map((item) => {
           const isActive = pathname === item.href;
+          const showNotificationBadge = item.name === "Notifications" && unreadNotificationsCount > 0;
+          
           return (
             <Link
               key={item.name}
@@ -172,7 +179,17 @@ export function Sidebar() {
               )}
               onClick={() => setMobileMenuOpen(false)}
             >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
+              <div className="relative">
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {showNotificationBadge && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs"
+                  >
+                    {unreadNotificationsCount}
+                  </Badge>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="truncate">{item.name}</p>
                 <p className="text-xs opacity-75 truncate">{item.description}</p>
@@ -181,6 +198,16 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      <Separator />
+
+      {/* Theme Toggle */}
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-muted-foreground">Theme</span>
+          <ThemeToggle />
+        </div>
+      </div>
 
       <Separator />
 
