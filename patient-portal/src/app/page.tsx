@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Heart, MapPin, Shield } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -30,11 +31,11 @@ export default function Home() {
             Find specialists, manage your insurance, and take control of your healthcare journey.
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="btn-mobile-lg">
-              Get Started
+            <Button size="lg" className="btn-mobile-lg" asChild>
+              <Link href="/signin">Sign In</Link>
             </Button>
-            <Button variant="outline" size="lg" className="btn-mobile-lg">
-              Learn More
+            <Button variant="outline" size="lg" className="btn-mobile-lg" asChild>
+              <Link href="/dashboard">Dashboard</Link>
             </Button>
           </div>
         </div>
