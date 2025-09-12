@@ -13,6 +13,7 @@ import { useState } from "react";
 import { AuthDivider } from "../ui/auth-divider";
 import { ForgotPasswordButton } from "../ui/forgot-password-button";
 import { GoogleSignInButton } from "../ui/google-signin-button";
+import { HealthcareHexagonBackground } from "../ui/healthcare-hexagon-background";
 
 export function SignInForm() {
   const [email, setEmail] = useState("");
@@ -66,8 +67,8 @@ export function SignInForm() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <HealthcareHexagonBackground className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md relative z-10 bg-background/95 backdrop-blur-sm border-border/50">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             Welcome to TwinnLinks
@@ -174,6 +175,6 @@ export function SignInForm() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </HealthcareHexagonBackground>
   );
 }
