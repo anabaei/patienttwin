@@ -37,6 +37,9 @@ export default function Home() {
             <Button variant="outline" size="lg" className="btn-mobile-lg" asChild>
               <Link href="/dashboard">Dashboard</Link>
             </Button>
+            <Button variant="secondary" size="lg" className="btn-mobile-lg" asChild>
+              <Link href="/insurance">Insurance</Link>
+            </Button>
           </div>
         </div>
       </section>

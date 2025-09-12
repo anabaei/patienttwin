@@ -2,7 +2,8 @@ import { RequireAuth } from "@/components/auth/require-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@twinn/store";
-import { Calendar, CreditCard, LogOut, User } from "lucide-react";
+import { Calendar, LogOut, Shield, User } from "lucide-react";
+import Link from "next/link";
 
 function DashboardContent() {
   const { account, signOut } = useAuthStore();
@@ -52,16 +53,19 @@ function DashboardContent() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Insurance</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">Active</div>
               <p className="text-xs text-muted-foreground">
                 Coverage verified
               </p>
+              <Button variant="outline" size="sm" className="mt-2 w-full" asChild>
+                <Link href="/insurance">Manage Insurance</Link>
+              </Button>
             </CardContent>
           </Card>
         </div>

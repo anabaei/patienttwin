@@ -45,11 +45,11 @@
   - **Acceptance**: Tests pass
 
 ## App UI (30%)
-- [ ] **[UI-001]** Auth pages/components (SignInForm, RequireAuth)
+- [x] **[UI-001]** Auth pages/components (SignInForm, RequireAuth)
   - **Estimate**: S
   - **Dependencies**: ST-002
   - **Acceptance**: Can sign in/out; protected routes enforced
-- [ ] **[UI-002]** Insurance connection page (provider/plan selection, benefits summary)
+- [x] **[UI-002]** Insurance connection page (provider/plan selection, benefits summary)
   - **Estimate**: M
   - **Dependencies**: ST-003
   - **Acceptance**: Connect plan and display coverage
