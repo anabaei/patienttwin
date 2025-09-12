@@ -10,6 +10,8 @@ interface AuthState {
 
 interface AuthActions {
   signIn: (email: string, code: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
   signOut: () => void;
   clearError: () => void;
 }
@@ -60,6 +62,61 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'Sign in failed',
+            isLoading: false 
+          });
+        }
+      },
+
+      signInWithGoogle: async () => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          // Simulate Google OAuth flow
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Mock Google user data
+          const googleUser = {
+            ...mockPatientAccount,
+            email: 'user@gmail.com',
+            firstName: 'Google',
+            lastName: 'User',
+            emailVerified: true,
+          };
+          
+          set({ 
+            account: googleUser,
+            isLoading: false,
+            error: null 
+          });
+        } catch (error) {
+          set({ 
+            error: error instanceof Error ? error.message : 'Google sign in failed',
+            isLoading: false 
+          });
+        }
+      },
+
+      forgotPassword: async (email: string) => {
+        set({ isLoading: true, error: null });
+        
+        try {
+          // Simulate API call delay
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Mock validation - accept any email for demo
+          if (email.includes('@')) {
+            // In a real app, this would send a reset email
+            console.log(`Password reset email sent to: ${email}`);
+            set({ 
+              isLoading: false,
+              error: null 
+            });
+          } else {
+            throw new Error('Please enter a valid email address');
+          }
+        } catch (error) {
+          set({ 
+            error: error instanceof Error ? error.message : 'Failed to send reset email',
             isLoading: false 
           });
         }

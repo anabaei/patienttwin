@@ -44,6 +44,32 @@ export const useAuthStore = create()(persist((set) => ({
             });
         }
     },
+    signInWithGoogle: async () => {
+        set({ isLoading: true, error: null });
+        try {
+            // Simulate Google OAuth flow
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Mock Google user data
+            const googleUser = {
+                ...mockPatientAccount,
+                email: 'user@gmail.com',
+                firstName: 'Google',
+                lastName: 'User',
+                emailVerified: true,
+            };
+            set({
+                account: googleUser,
+                isLoading: false,
+                error: null
+            });
+        }
+        catch (error) {
+            set({
+                error: error instanceof Error ? error.message : 'Google sign in failed',
+                isLoading: false
+            });
+        }
+    },
     signOut: () => {
         set({
             account: null,

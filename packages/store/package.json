@@ -10,13 +10,18 @@
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
-  "keywords": ["healthcare", "booking", "zustand", "store"],
+  "keywords": [
+    "healthcare",
+    "booking",
+    "zustand",
+    "store"
+  ],
   "author": "TwinnLinks",
   "license": "ISC",
   "dependencies": {
-    "zustand": "^4.4.7",
+    "date-fns": "^3.0.6",
     "zod": "^3.22.4",
-    "date-fns": "^3.0.6"
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

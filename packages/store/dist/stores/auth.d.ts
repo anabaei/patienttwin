@@ -6,6 +6,7 @@ interface AuthState {
 }
 interface AuthActions {
     signIn: (email: string, code: string) => Promise<void>;
+    signInWithGoogle: () => Promise<void>;
     signOut: () => void;
     clearError: () => void;
 }
