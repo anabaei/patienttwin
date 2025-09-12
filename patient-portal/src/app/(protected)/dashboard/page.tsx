@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { HealthcareBalanceCard } from "@/components/ui/healthcare-balance-card";
 import {
   DashboardAppointmentSkeleton,
   DashboardBalanceSkeleton,
@@ -17,10 +18,12 @@ import {
   Bell,
   Building2,
   Calendar,
+  DollarSign,
+  Heart,
   Plus,
   Shield,
-  User,
-  Wallet
+  TrendingUp,
+  User
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -113,11 +116,29 @@ export default function DashboardPage() {
   ).length;
 
   // Mock data for balances and stats
-  const mockBalances = {
-    hsa: 800,
-    wsa: 450,
-    total: 1250
-  };
+  const mockBalances = [
+    {
+      label: "HSA Balance",
+      amount: 800,
+      description: "Health Savings Account",
+      icon: <Heart className="h-4 w-4" />,
+      color: "primary" as const
+    },
+    {
+      label: "WSA Balance", 
+      amount: 450,
+      description: "Wellness Savings Account",
+      icon: <TrendingUp className="h-4 w-4" />,
+      color: "secondary" as const
+    },
+    {
+      label: "Total Available",
+      amount: 1250,
+      description: "Ready to use",
+      icon: <DollarSign className="h-4 w-4" />,
+      color: "accent" as const
+    }
+  ];
 
   const mockStats = {
     notifications: 3,
@@ -221,62 +242,7 @@ export default function DashboardPage() {
 
         {/* Priority 1: Account Balances - Most Important */}
         <motion.div className="mb-6" variants={itemVariants}>
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-primary text-lg">
-                <Wallet className="h-5 w-5" />
-                Your Healthcare Account Balances
-              </CardTitle>
-              <CardDescription>
-                Use your funds for healthcare expenses and appointments
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-3 md:grid-cols-3">
-                <motion.div 
-                  className="text-center p-4 bg-secondary/10 rounded-lg border border-secondary/20"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="text-2xl font-bold text-primary mb-1">${mockBalances.hsa}</div>
-                  <div className="text-sm font-medium text-primary">HSA Balance</div>
-                  <div className="text-xs text-muted-foreground">Health Savings Account</div>
-                </motion.div>
-                <motion.div 
-                  className="text-center p-4 bg-secondary/10 rounded-lg border border-secondary/20"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="text-2xl font-bold text-secondary-foreground mb-1">${mockBalances.wsa}</div>
-                  <div className="text-sm font-medium text-secondary-foreground">WSA Balance</div>
-                  <div className="text-xs text-muted-foreground">Wellness Savings Account</div>
-                </motion.div>
-                <motion.div 
-                  className="text-center p-4 bg-accent/10 rounded-lg border-2 border-accent/30"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="text-3xl font-bold mb-1">${mockBalances.total.toLocaleString()}</div>
-                  <div className="text-sm font-medium">Total Available</div>
-                  <div className="text-xs text-muted-foreground">Ready to use</div>
-                </motion.div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button asChild className="flex-1">
-                  <Link href="/book">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Book Appointment
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild className="flex-1">
-                  <Link href="/balances">
-                    View Details
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <HealthcareBalanceCard balances={mockBalances} />
         </motion.div>
 
         {/* Priority 2: Next Appointment */}

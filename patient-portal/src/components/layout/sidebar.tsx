@@ -9,7 +9,8 @@ import {
     Home,
     MapPin,
     Settings,
-    Shield
+    Shield,
+    Wallet
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,6 +45,12 @@ const navigationItems = [
     href: "/insurance",
     icon: Shield,
     description: "Manage your coverage"
+  },
+  {
+    name: "Balances",
+    href: "/balances",
+    icon: Wallet,
+    description: "View account balances"
   },
   {
     name: "Settings",
