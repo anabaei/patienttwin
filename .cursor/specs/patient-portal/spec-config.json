@@ -1,0 +1,40 @@
+{
+  "feature": "patient-portal",
+  "currentPhase": "tasks",
+  "phaseStatus": {
+    "requirements": "approved",
+    "design": "in-progress",
+    "tasks": "in-progress"
+  },
+  "lastUpdated": "2025-01-27T00:00:00Z",
+  "version": "1.0",
+  "decisions": [
+    {
+      "date": "2025-01-27",
+      "title": "Store-centric mock domain layer aligned with Prisma schema",
+      "reason": "No backend; need realistic UX with swap-friendly boundary and future compatibility",
+      "impact": "Defines `@twinn/store` contracts matching Prisma entities, Ontario Canada geographic data"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R-001",
+      "title": "Drift from future API contracts",
+      "mitigation": "Define DTO-like interfaces and keep store API close to expected endpoints"
+    }
+  ],
+  "dependencies": [
+    "next@15",
+    "react@19",
+    "tailwindcss",
+    "@radix-ui/react-*",
+    "framer-motion",
+    "react-hook-form",
+    "zod",
+    "zustand",
+    "storybook",
+    "next-themes",
+    "tailwindcss-animate",
+    "lucide-react"
+  ]
+}

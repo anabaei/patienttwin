@@ -1,0 +1,794 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  password        String
+  firstName       String
+  lastName        String
+  role            UserRole         @default(OWNER)
+  avatarUrl       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  auditMetadata   Json             @default("{}")
+  clinics         ClinicUser[]
+  invitations     Invitation[]     @relation("UserInvitations")
+  notifications   Notification[]
+  organization    Organization?    @relation("OrganizationOwner")
+  timeOffRequests TimeOffRequest[] @relation("StaffTimeOff")
+  appointments    Appointment[]    @relation("SpecialistAppointment")
+  serviceOptions  ServiceOption[]  @relation("SpecialistServiceOption")
+  dayWaitingLists DayWaitingList[]
+}
+
+model Organization {
+  id                String             @id @default(cuid())
+  name              String
+  type              String
+  taxId             String
+  ownerId           String             @unique
+  avatarUrl         String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  clinics           Clinic[]
+  invitations       Invitation[]
+  owner             User               @relation("OrganizationOwner", fields: [ownerId], references: [id])
+  patients          Patient[]
+  patientOrganizationMemberships PatientOrganizationMembership[]
+  slug              OrganizationSlug?
+  resourceSchedules ResourceSchedule[]
+  resources         Resource[]
+  scheduleTemplates ScheduleTemplate[]
+}
+
+model OrganizationSlug {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  organizationId String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("organization_slugs")
+}
+
+model Clinic {
+  id                          String                       @id @default(cuid())
+  name                        String
+  address                     String
+  phone                       String
+  timezone                    String                       @default("UTC")
+  organizationId              String
+  avatarUrl                   String?
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @updatedAt
+  isDeleted                   Boolean                      @default(false)
+  latitude                    Float?
+  longitude                   Float?
+  geocodedAt                  DateTime?
+  geocodingAccuracy           String?
+  geocodingProvider           String?
+  bookingSettings             BookingSettings?
+  organization                Organization                 @relation(fields: [organizationId], references: [id])
+  closures                    ClinicClosure[]
+  operatingHours              ClinicOperatingHours?
+  users                       ClinicUser[]
+  invitationClinicAssignments InvitationClinicAssignment[]
+  locations                   Location[]
+  services                    Service[]
+  timeOffRequests             TimeOffRequest[]
+  appointments                Appointment[]
+  resourceSchedules           ResourceSchedule[]
+  resources                   Resource[]
+  scheduleTemplates           ScheduleTemplate[]
+  dayWaitingLists            DayWaitingList[]
+
+  @@index([latitude, longitude])
+}
+
+model Resource {
+  id             String             @id @default(cuid())
+  organizationId String
+  clinicId       String?
+  resourceType   ResourceType
+  name           String
+  description    String?
+  specifications Json               @default("{}")
+  capacity       Int                @default(1)
+  isActive       Boolean            @default(true)
+  isAvailable    Boolean            @default(true)
+  status         ResourceStatus     @default(OPERATIONAL)
+  bookingRules   Json               @default("{}")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  appointments   Appointment[]      @relation("PrimaryResourceAppointment")
+  schedules      ResourceSchedule[]
+  clinic         Clinic?            @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, resourceType])
+  @@index([clinicId, resourceType])
+  @@index([isActive, isAvailable])
+  @@index([status])
+  @@map("resources")
+}
+
+model ScheduleTemplate {
+  id                      String                       @id @default(cuid())
+  organizationId          String
+  clinicId                String?
+  name                    String
+  description             String?
+  resourceType            ResourceType
+  pattern                 Json
+  tags                    String[]                     @default([])
+  isActive                Boolean                      @default(true)
+  isDefault               Boolean                      @default(false)
+  usageCount              Int                          @default(0)
+  lastUsedAt              DateTime?
+  createdAt               DateTime                     @default(now())
+  updatedAt               DateTime                     @updatedAt
+  schedules               ResourceSchedule[]
+  invitationAssignments   InvitationClinicAssignment[]
+  clinic                  Clinic?                      @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  organization            Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, resourceType])
+  @@index([clinicId])
+  @@index([isActive])
+  @@map("schedule_templates")
+}
+
+model ResourceSchedule {
+  id             String              @id @default(cuid())
+  organizationId String
+  clinicId       String?
+  resourceId     String
+  templateId     String?
+  effectiveFrom  DateTime            @db.Date
+  effectiveUntil DateTime?           @db.Date
+  pattern        Json
+  assignmentType AssignmentType      @default(REGULAR)
+  status         ScheduleStatus      @default(ACTIVE)
+  metadata       Json                @default("{}")
+  notes          String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  clinic         Clinic?             @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  resource       Resource            @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  template       ScheduleTemplate?   @relation(fields: [templateId], references: [id])
+  exceptions     ScheduleException[]
+
+  @@index([resourceId])
+  @@index([effectiveFrom, effectiveUntil])
+  @@index([organizationId, clinicId])
+  @@index([status])
+  @@map("resource_schedules")
+}
+
+model ScheduleException {
+  id              String           @id @default(cuid())
+  scheduleId      String
+  exceptionDate   DateTime         @db.Date
+  exceptionType   ExceptionType
+  patternOverride Json?
+  reason          String?
+  metadata        Json             @default("{}")
+  createdAt       DateTime         @default(now())
+  schedule        ResourceSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, exceptionDate])
+  @@index([scheduleId])
+  @@index([exceptionDate])
+  @@map("schedule_exceptions")
+}
+
+model Appointment {
+  id                  String            @id @default(cuid())
+  organizationId      String
+  patientId           String
+  clinicId            String
+  locationId          String?
+  primaryResourceId   String?
+  specialistId        String?
+  serviceId           String?
+  serviceOptionId     String?
+  startTime           DateTime
+  endTime             DateTime
+  title               String?
+  status              AppointmentStatus @default(SCHEDULED)
+  type                AppointmentType   @default(CONSULTATION)
+  notes               String?
+  cancellationReason  String?
+  remindersSent       Boolean           @default(false)
+  additionalResources Json              @default("[]")
+  bookingSource       BookingSource     @default(MANUAL)
+  bookedBy            String?
+  fcMetadata          Json              @default("{}")
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  booking             Booking?
+  clinic              Clinic            @relation(fields: [clinicId], references: [id])
+  location            Location?         @relation(fields: [locationId], references: [id])
+  patient             Patient           @relation(fields: [patientId], references: [id])
+  primaryResource     Resource?         @relation("PrimaryResourceAppointment", fields: [primaryResourceId], references: [id])
+  service             Service?          @relation(fields: [serviceId], references: [id])
+  serviceOption       ServiceOption?    @relation(fields: [serviceOptionId], references: [id])
+  specialist          User?             @relation("SpecialistAppointment", fields: [specialistId], references: [id], onDelete: Restrict)
+
+  @@index([primaryResourceId, startTime, endTime])
+  @@index([clinicId, startTime, endTime])
+  @@index([organizationId, startTime, endTime])
+  @@index([status])
+  @@index([patientId])
+  @@index([specialistId])
+  @@map("appointments")
+}
+
+model Location {
+  id           String        @id @default(cuid())
+  name         String
+  address      String
+  phone        String?
+  email        String?
+  clinicId     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  clinic       Clinic        @relation(fields: [clinicId], references: [id])
+  appointments Appointment[]
+}
+
+model Service {
+  id           String          @id @default(cuid())
+  name         String
+  clinicId     String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  clinic       Clinic          @relation(fields: [clinicId], references: [id])
+  options      ServiceOption[]
+  appointments Appointment[]
+  dayWaitingLists DayWaitingList[]
+}
+
+model ServiceOption {
+  id           String        @id @default(cuid())
+  serviceId    String
+  type         ServiceType
+  price        Float
+  duration     Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  service      Service       @relation(fields: [serviceId], references: [id])
+  appointments Appointment[]
+  specialists  User[]        @relation("SpecialistServiceOption")
+  dayWaitingLists DayWaitingList[]
+}
+
+model BookingSettings {
+  id                       String   @id @default(cuid())
+  requireApproval          Boolean  @default(false)
+  maxAdvanceBookingDays    Int      @default(30)
+  minAdvanceBookingHours   Int      @default(2)
+  bufferBetweenAppts       Int      @default(15)
+  clinicId                 String   @unique
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  bookingCutoffTime        String?
+  bookingInterval          Int?
+  defaultTreatmentDuration Int?
+  maxAppointmentsPerDay    Int?
+  timezone                 String   @default("UTC")
+  clinic                   Clinic   @relation(fields: [clinicId], references: [id])
+}
+
+model ClinicUser {
+  id        String    @id @default(cuid())
+  clinicId  String
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  role      UserRole
+  endDate   DateTime?
+  isActive  Boolean   @default(true)
+  startDate DateTime  @default(now())
+  clinic    Clinic    @relation(fields: [clinicId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@unique([clinicId, userId])
+}
+
+model ClinicClosure {
+  id        String   @id @default(cuid())
+  clinicId  String
+  date      DateTime
+  startTime String?
+  endTime   String?
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clinic    Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId, date])
+}
+
+model Patient {
+  id                    String        @id @default(cuid())
+  firstName             String
+  lastName              String
+  email                 String?
+  phone                 String
+  dateOfBirth           DateTime
+  gender                Gender
+  address               Json?
+  emergencyContact      Json?
+  medicalHistory        Json?
+  insurance             Json?
+  avatarUrl             String?
+  organizationId        String
+  isActive              Boolean       @default(true)
+  emailVerified         Boolean       @default(false)
+  emailVerificationToken String?     @unique
+  emailVerificationExpires DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  organization          Organization  @relation(fields: [organizationId], references: [id])
+  appointments          Appointment[]
+  dayWaitingLists       DayWaitingList[]
+  organizationMemberships PatientOrganizationMembership[]
+
+  @@index([organizationId])
+  @@index([email])
+  @@index([phone])
+  @@index([emailVerificationToken])
+}
+
+model PatientAccount {
+  id                    String        @id @default(cuid())
+  email                 String        @unique
+  password              String
+  firstName             String
+  lastName              String
+  phone                 String
+  dateOfBirth           DateTime
+  isActive              Boolean       @default(true)
+  isLocked              Boolean       @default(false)
+  failedLoginAttempts   Int           @default(0)
+  lastLoginAt           DateTime?
+  passwordResetToken    String?       @unique
+  passwordResetExpires  DateTime?
+  emailVerificationToken String?      @unique
+  emailVerificationExpires DateTime?
+  emailVerified         Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  
+  // Relations
+  organizationMemberships PatientOrganizationMembership[]
+
+  @@index([email])
+  @@index([passwordResetToken])
+  @@index([emailVerificationToken])
+}
+
+model PatientOrganizationMembership {
+  id                    String        @id @default(cuid())
+  patientAccountId      String
+  patientId             String
+  organizationId        String
+  isActive              Boolean       @default(true)
+  joinedAt              DateTime      @default(now())
+  lastAccessedAt        DateTime?
+  
+  // Relations
+  patientAccount        PatientAccount @relation(fields: [patientAccountId], references: [id], onDelete: Cascade)
+  patient               Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  organization          Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // One membership per patient account per organization
+  @@unique([patientAccountId, organizationId])
+  @@unique([patientId, organizationId])
+  @@index([organizationId])
+  @@index([patientAccountId])
+}
+
+model Booking {
+  id              String         @id @default(cuid())
+  appointmentId   String         @unique
+  amount          Float
+  currency        String         @default("USD")
+  status          BookingStatus  @default(PENDING)
+  paymentMethod   PaymentMethod?
+  paymentIntentId String?
+  refundAmount    Float?
+  refundReason    String?
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  appointment     Appointment    @relation(fields: [appointmentId], references: [id])
+
+  @@index([status])
+  @@index([appointmentId])
+}
+
+model Notification {
+  id        String               @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  priority  NotificationPriority @default(MEDIUM)
+  isRead    Boolean              @default(false)
+  actionUrl String?
+  metadata  Json?
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  user      User                 @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Invitation {
+  id                String                       @id @default(cuid())
+  email             String
+  firstName         String
+  lastName          String
+  token             String                       @unique
+  organizationId    String
+  invitedById       String
+  status            InvitationStatus             @default(PENDING)
+  expiresAt         DateTime
+  acceptedAt        DateTime?
+  createdAt         DateTime                     @default(now())
+  updatedAt         DateTime                     @updatedAt
+  invitedBy         User                         @relation("UserInvitations", fields: [invitedById], references: [id])
+  organization      Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clinicAssignments InvitationClinicAssignment[]
+
+  @@unique([email, organizationId])
+  @@index([token])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model InvitationClinicAssignment {
+  id                 String            @id @default(cuid())
+  invitationId       String
+  clinicId           String
+  role               UserRole
+  scheduleTemplateId String?
+  createdAt          DateTime          @default(now())
+  clinic             Clinic            @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  invitation         Invitation        @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  scheduleTemplate   ScheduleTemplate? @relation(fields: [scheduleTemplateId], references: [id], onDelete: SetNull)
+
+  @@unique([invitationId, clinicId])
+  @@index([invitationId])
+  @@index([clinicId])
+}
+
+model TimeOffRequest {
+  id            String        @id @default(cuid())
+  staffId       String
+  clinicId      String?
+  startDate     DateTime
+  endDate       DateTime
+  type          TimeOffType
+  reason        String?
+  status        RequestStatus
+  auditMetadata Json          @default("{}")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  clinic        Clinic?       @relation(fields: [clinicId], references: [id])
+  staff         User          @relation("StaffTimeOff", fields: [staffId], references: [id])
+
+  @@index([staffId])
+  @@index([clinicId])
+  @@index([status])
+  @@index([startDate, endDate])
+}
+
+// ===== WAITING LIST MODELS =====
+
+model DayWaitingList {
+  id              String              @id @default(cuid())
+  patientId       String
+  patient         Patient             @relation(fields: [patientId], references: [id])
+  specialistId    String
+  specialist      User                @relation(fields: [specialistId], references: [id])
+  clinicId        String
+  clinic          Clinic              @relation(fields: [clinicId], references: [id])
+  serviceId       String?
+  service         Service?            @relation(fields: [serviceId], references: [id])
+  serviceOptionId String?
+  serviceOption   ServiceOption?      @relation(fields: [serviceOptionId], references: [id])
+  
+  // Simple day-specific waiting - just the date
+  targetDate      DateTime            @db.Date  // The specific day they want
+  
+  // Queue management
+  position        Int                 // Queue position for this day
+  status          DayWaitingListStatus @default(ACTIVE)
+  priority        WaitingListPriority @default(NORMAL)
+  
+  // Contact preferences
+  contactMethod   ContactMethod       @default(EMAIL)
+  contactDetails  Json?               // Phone numbers, email preferences
+  
+  // Metadata
+  notes           String?
+  source          String              @default("PUBLIC_BOOKING")
+  metadata        Json                @default("{}")
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  expiresAt       DateTime?           // Auto-remove after target date
+  
+  @@unique([patientId, specialistId, targetDate]) // One entry per patient per specialist per day
+  @@index([specialistId, targetDate, status, priority, createdAt])
+  @@index([clinicId, targetDate, status])
+  @@index([expiresAt])
+}
+
+model ClinicOperatingHours {
+  id             String               @id @default(cuid())
+  clinicId       String               @unique
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  clinic         Clinic               @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  fridayHours    DailyOperatingHours? @relation("FridayHours")
+  mondayHours    DailyOperatingHours? @relation("MondayHours")
+  saturdayHours  DailyOperatingHours? @relation("SaturdayHours")
+  sundayHours    DailyOperatingHours? @relation("SundayHours")
+  thursdayHours  DailyOperatingHours? @relation("ThursdayHours")
+  tuesdayHours   DailyOperatingHours? @relation("TuesdayHours")
+  wednesdayHours DailyOperatingHours? @relation("WednesdayHours")
+}
+
+model DailyOperatingHours {
+  id           String                @id @default(cuid())
+  isOpen       Boolean               @default(false)
+  openTime     String?
+  closeTime    String?
+  mondayId     String?               @unique
+  tuesdayId    String?               @unique
+  wednesdayId  String?               @unique
+  thursdayId   String?               @unique
+  fridayId     String?               @unique
+  saturdayId   String?               @unique
+  sundayId     String?               @unique
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  breakPeriods BreakPeriod[]
+  fridayFor    ClinicOperatingHours? @relation("FridayHours", fields: [fridayId], references: [id], onDelete: Cascade)
+  mondayFor    ClinicOperatingHours? @relation("MondayHours", fields: [mondayId], references: [id], onDelete: Cascade)
+  saturdayFor  ClinicOperatingHours? @relation("SaturdayHours", fields: [saturdayId], references: [id], onDelete: Cascade)
+  sundayFor    ClinicOperatingHours? @relation("SundayHours", fields: [sundayId], references: [id], onDelete: Cascade)
+  thursdayFor  ClinicOperatingHours? @relation("ThursdayHours", fields: [thursdayId], references: [id], onDelete: Cascade)
+  tuesdayFor   ClinicOperatingHours? @relation("TuesdayHours", fields: [tuesdayId], references: [id], onDelete: Cascade)
+  wednesdayFor ClinicOperatingHours? @relation("WednesdayHours", fields: [wednesdayId], references: [id], onDelete: Cascade)
+}
+
+model BreakPeriod {
+  id           String              @id @default(cuid())
+  dailyHoursId String
+  startTime    String
+  endTime      String
+  reason       String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  dailyHours   DailyOperatingHours @relation(fields: [dailyHoursId], references: [id], onDelete: Cascade)
+
+  @@index([dailyHoursId])
+}
+
+model GeocodingCache {
+  id        String   @id @default(cuid())
+  address   String   @unique
+  latitude  Float
+  longitude Float
+  accuracy  String?
+  provider  String
+  cachedAt  DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([address])
+  @@index([expiresAt])
+  @@map("geocoding_cache")
+}
+
+model LocationSearch {
+  id          String   @id @default(cuid())
+  searchTerm  String
+  latitude    Float?
+  longitude   Float?
+  resultCount Int
+  userId      String?
+  sessionId   String?
+  createdAt   DateTime @default(now())
+
+  @@index([searchTerm])
+  @@index([createdAt])
+  @@map("location_searches")
+}
+
+enum ResourceType {
+  STAFF
+  EQUIPMENT
+  ROOM
+  VEHICLE
+  VIRTUAL
+}
+
+enum ResourceStatus {
+  OPERATIONAL
+  MAINTENANCE
+  OUT_OF_SERVICE
+}
+
+enum AssignmentType {
+  REGULAR
+  ROTATION
+  TEMPORARY
+  ON_CALL
+}
+
+enum ScheduleStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum ExceptionType {
+  OVERRIDE
+  CANCEL
+}
+
+enum BookingSource {
+  MANUAL
+  ONLINE
+  API
+  IMPORT
+}
+
+enum UserRole {
+  OWNER
+  SUPER_ADMIN
+  CLINIC_ADMIN
+  SPECIALIST
+  FRONT_DESK
+  EQUIPMENT_MANAGER
+  FACILITY_MANAGER
+  CLIENT
+}
+
+enum ServiceType {
+  INITIAL
+  FOLLOW_UP
+  CONSULTATION
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum AppointmentType {
+  CONSULTATION
+  FOLLOW_UP
+  PROCEDURE
+  EMERGENCY
+  VIRTUAL
+  MAINTENANCE
+  CLEANING
+  SETUP
+  INITIAL
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CASH
+  INSURANCE
+}
+
+enum NotificationType {
+  APPOINTMENT_REMINDER
+  APPOINTMENT_CANCELLED
+  PAYMENT_RECEIVED
+  SYSTEM_UPDATE
+  STAFF_MESSAGE
+  SCHEDULE_ASSIGNED
+  TEMPLATE_UPDATED
+  CONFLICT_DETECTED
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+enum TimeOffType {
+  VACATION
+  SICK_LEAVE
+  PERSONAL
+  EMERGENCY
+  BEREAVEMENT
+  MATERNITY
+  PATERNITY
+  TRAINING
+  ADMINISTRATIVE
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+  CANCELLED
+  EXPIRED
+}
+
+// ===== WAITING LIST ENUMS =====
+
+enum DayWaitingListStatus {
+  ACTIVE      // Waiting for slot
+  NOTIFIED    // Slot available, waiting for response
+  CONFIRMED   // Patient confirmed the slot
+  EXPIRED     // Target date passed
+  CANCELLED   // Patient cancelled
+  FULFILLED   // Appointment booked
+}
+
+enum WaitingListPriority {
+  URGENT      // Emergency cases, VIP patients
+  HIGH        // Long-time patients, premium members
+  NORMAL      // Regular patients
+  LOW         // New patients, non-urgent cases
+}
+
+enum ContactMethod {
+  EMAIL
+  SMS
+  PHONE
+  PUSH
+}
