@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { ForgotPasswordButton } from '../components/ui/forgot-password-button';
 
 const meta: Meta<typeof ForgotPasswordButton> = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { SignInForm } from '../components/auth/sign-in-form';
 
 const meta: Meta<typeof SignInForm> = {

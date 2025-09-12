@@ -9,17 +9,17 @@ import { Button } from "@/components/ui/button";
 import { Wizard, type WizardStep } from "@/components/ui/wizard";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useInsuranceStore } from "@twinn/store";
+import { useInsuranceStore, type InsuranceProvider as StoreInsuranceProvider } from "@twinn/store";
 import { ArrowLeft, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
 // Transform store providers to match component interface
-const transformProviders = (storeProviders: any[]): InsuranceProvider[] => {
+const transformProviders = (storeProviders: StoreInsuranceProvider[]): InsuranceProvider[] => {
   return storeProviders.map(provider => ({
     id: provider.id,
     name: provider.name,
-    image: provider.logoUrl,
+    image: provider.logoUrl || '',
     description: getProviderDescription(provider.id),
     isPopular: getIsPopular(provider.id),
   }));

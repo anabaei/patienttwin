@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { InsuranceReview, type InsuranceReviewData } from '@/components/insurance/insurance-review';
+import { InsuranceReview } from '@/components/insurance/insurance-review';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof InsuranceReview> = {
   title: 'Insurance/InsuranceReview',

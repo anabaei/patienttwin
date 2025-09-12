@@ -326,7 +326,16 @@ const generateSpecialistAvailability = (specialistId: string) => {
   return availability;
 };
 
-const mockAvailability = {
+// Define proper types for availability data
+interface SpecialistAvailability {
+  [specialistId: string]: { [date: string]: string[] };
+}
+
+interface ClinicAvailability {
+  [clinicId: string]: SpecialistAvailability;
+}
+
+const mockAvailability: ClinicAvailability = {
   '1': {
     '1': generateSpecialistAvailability('1'),
     '2': generateSpecialistAvailability('2'),
@@ -450,14 +459,14 @@ export default function BookPage() {
 
   // availableDates is now generated dynamically above
   const availableTimes = selectedClinic && selectedSpecialist && selectedDate
-    ? mockAvailability[selectedClinic as keyof typeof mockAvailability]?.[selectedSpecialist]?.[selectedDate] || []
+    ? mockAvailability[selectedClinic]?.[selectedSpecialist]?.[selectedDate] || []
     : [];
 
   // Helper function to format availability data for the calendar component
   const getAvailabilityForSpecialist = () => {
     if (!selectedClinic || !selectedSpecialist) return {};
     
-    const specialistAvailability = mockAvailability[selectedClinic as keyof typeof mockAvailability]?.[selectedSpecialist] || {};
+    const specialistAvailability = mockAvailability[selectedClinic]?.[selectedSpecialist] || {};
     const formattedAvailability: { [date: string]: Array<{ time: string; available: boolean; reason?: string }> } = {};
     
     // All possible time slots for a day
@@ -465,7 +474,7 @@ export default function BookPage() {
     
     Object.entries(specialistAvailability).forEach(([date, availableTimes]) => {
       formattedAvailability[date] = allTimeSlots.map(time => {
-        const isAvailable = availableTimes.includes(time);
+        const isAvailable = (availableTimes as string[]).includes(time);
         return {
           time,
           available: isAvailable,
@@ -597,7 +606,7 @@ export default function BookPage() {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
       },
     },
@@ -1008,7 +1017,6 @@ export default function BookPage() {
             </Card>
 
             {/* Credit Card Form */}
-            {console.log('selectedPaymentMethod:', selectedPaymentMethod, 'should show form:', selectedPaymentMethod === 'credit-card')}
             {selectedPaymentMethod === 'credit-card' && (
               <Card className="border border-border rounded-xl">
                 <CardHeader>
@@ -1241,8 +1249,7 @@ export default function BookPage() {
               (currentStep === 'clinic' && !selectedClinic) ||
               (currentStep === 'specialist' && !selectedSpecialist) ||
               (currentStep === 'service' && !selectedService) ||
-              (currentStep === 'datetime' && (!selectedDate || !selectedTime)) ||
-              (currentStep === 'confirmation' && (!selectedPaymentMethod || !isCreditCardValid()))
+              (currentStep === 'datetime' && (!selectedDate || !selectedTime))
             }
           >
             Next

@@ -119,10 +119,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Store Test Component */}
-      <section className="container px-4 py-8">
-        <StoreTest />
-      </section>
     </div>
   );
 }

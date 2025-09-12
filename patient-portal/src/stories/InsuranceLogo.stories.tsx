@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { InsuranceLogo } from '@/components/ui/insurance-logo';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof InsuranceLogo> = {
   title: 'UI/InsuranceLogo',

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ClinicsPage } from '../app/(protected)/clinics/page';
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import ClinicsPage from '../app/(protected)/clinics/page';
 
 const meta: Meta<typeof ClinicsPage> = {
   title: 'Pages/Clinics',

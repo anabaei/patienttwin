@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { RequireAuth } from '../components/auth/require-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 

@@ -1,9 +1,8 @@
-import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { Lock, Mail } from 'lucide-react';
 import { FormField } from '../components/ui/form-field';
 import { Input } from '../components/ui/input';
 import { InputWithIcon } from '../components/ui/input-with-icon';
-import { Mail, Lock } from 'lucide-react';
 
 const meta: Meta<typeof FormField> = {
   title: 'UI/FormField',

@@ -60,7 +60,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-foreground">
-              ${currentPlan.deductible.toLocaleString()}
+              ${currentPlan.deductibleAnnual?.toLocaleString() || '0'}
             </p>
             <p className="text-xs text-muted-foreground">Annual deductible</p>
           </CardContent>
@@ -75,7 +75,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-foreground">
-              ${currentPlan.copay}
+              ${currentPlan.copayByServiceOptionId ? Object.values(currentPlan.copayByServiceOptionId)[0] || '0' : '0'}
             </p>
             <p className="text-xs text-muted-foreground">Per visit</p>
           </CardContent>
@@ -90,7 +90,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-foreground">
-              {currentPlan.coinsurance}%
+              {currentPlan.coinsurancePercent || 0}%
             </p>
             <p className="text-xs text-muted-foreground">After deductible</p>
           </CardContent>
@@ -105,7 +105,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-foreground">
-              ${currentPlan.annualMax.toLocaleString()}
+              ${currentPlan.outOfPocketMaxAnnual?.toLocaleString() || '0'}
             </p>
             <p className="text-xs text-muted-foreground">Maximum coverage</p>
           </CardContent>
@@ -121,7 +121,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Network Type</span>
-              <span className="text-sm font-medium">{currentPlan.networkType}</span>
+              <span className="text-sm font-medium">{currentPlan.type}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Plan Type</span>
@@ -148,7 +148,7 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Service Cost</span>
-                <span className="text-sm font-medium">${benefits.serviceCost}</span>
+                <span className="text-sm font-medium">${benefits.listPrice}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Your Copay</span>
@@ -156,11 +156,11 @@ export function BenefitsSummaryCard({ planId }: BenefitsSummaryCardProps) {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Insurance Pays</span>
-                <span className="text-sm font-medium">${benefits.insurancePays}</span>
+                <span className="text-sm font-medium">${benefits.listPrice - benefits.totalDueNow}</span>
               </div>
               <div className="flex items-center justify-between border-t pt-2">
                 <span className="text-sm font-medium">You Pay</span>
-                <span className="text-sm font-bold text-primary">${benefits.patientPays}</span>
+                <span className="text-sm font-bold text-primary">${benefits.totalDueNow}</span>
               </div>
             </div>
           </CardContent>

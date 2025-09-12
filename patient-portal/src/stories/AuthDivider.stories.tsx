@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { AuthDivider } from '../components/ui/auth-divider';
 
 const meta: Meta<typeof AuthDivider> = {

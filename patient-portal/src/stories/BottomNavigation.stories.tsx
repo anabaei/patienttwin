@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { BottomNavigation } from '../components/layout/bottom-navigation';
 
 const meta: Meta<typeof BottomNavigation> = {

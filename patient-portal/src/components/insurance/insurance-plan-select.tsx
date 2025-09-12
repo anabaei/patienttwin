@@ -43,7 +43,7 @@ export function InsurancePlanSelect({ providerId, value, onValueChange }: Insura
                     <h3 className="font-semibold text-foreground">
                       {plan.name}
                     </h3>
-                    {plan.isPopular && (
+                    {false && (
                       <div className="flex items-center space-x-1">
                         <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
                         <span className="text-xs text-amber-600 font-medium">Popular</span>
@@ -51,16 +51,16 @@ export function InsurancePlanSelect({ providerId, value, onValueChange }: Insura
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {plan.type} • {plan.networkType}
+                    {plan.type}
                   </p>
                   <div className="flex items-center space-x-4 mt-2">
                     <div className="text-sm">
                       <span className="text-muted-foreground">Deductible: </span>
-                      <span className="font-medium">${plan.deductible.toLocaleString()}</span>
+                      <span className="font-medium">${plan.deductibleAnnual?.toLocaleString() || '0'}</span>
                     </div>
                     <div className="text-sm">
                       <span className="text-muted-foreground">Copay: </span>
-                      <span className="font-medium">${plan.copay}</span>
+                      <span className="font-medium">${plan.copayByServiceOptionId ? Object.values(plan.copayByServiceOptionId)[0] || '0' : '0'}</span>
                     </div>
                   </div>
                 </div>

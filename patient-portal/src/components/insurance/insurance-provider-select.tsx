@@ -38,7 +38,7 @@ export function InsuranceProviderSelect({ value, onValueChange }: InsuranceProvi
                   {provider.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {provider.plans.length} plan{provider.plans.length !== 1 ? 's' : ''} available
+                  Multiple plans available
                 </p>
               </div>
               {value === provider.id && (

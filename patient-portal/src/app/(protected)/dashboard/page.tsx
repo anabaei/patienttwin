@@ -9,6 +9,7 @@ import {
   DashboardQuickActionsSkeleton,
   DashboardStatsSkeleton
 } from "@/components/ui/skeletons";
+import type { Appointment, Clinic, Service, User as StoreUser } from "@twinn/store";
 import { useAppointmentsStore, useAuthStore, useInsuranceStore } from "@twinn/store";
 import { motion } from "framer-motion";
 import {
@@ -24,6 +25,14 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// Extended appointment type with nested data for display
+interface ExtendedAppointment extends Appointment {
+  specialist?: StoreUser & { specialties?: string[] };
+  service?: Service;
+  clinic?: Clinic;
+  scheduledAt?: string; // Alias for startTime for backward compatibility
+}
+
 export default function DashboardPage() {
   const { account } = useAuthStore();
   const { connectedPlan } = useInsuranceStore();
@@ -31,6 +40,58 @@ export default function DashboardPage() {
   
   // Simulate loading state for demo purposes
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Mock data for demonstration
+  const mockSpecialists: (StoreUser & { specialties?: string[] })[] = [
+    {
+      id: '1',
+      email: 'dr.chen@clinic.com',
+      firstName: 'Amelia',
+      lastName: 'Chen',
+      role: 'SPECIALIST',
+      avatarUrl: 'https://i.pravatar.cc/100?img=1',
+      auditMetadata: {},
+      specialties: ['Internal Medicine']
+    },
+    {
+      id: '2',
+      email: 'dr.rodriguez@clinic.com',
+      firstName: 'Michael',
+      lastName: 'Rodriguez',
+      role: 'SPECIALIST',
+      avatarUrl: 'https://i.pravatar.cc/100?img=2',
+      auditMetadata: {},
+      specialties: ['Family Medicine']
+    }
+  ];
+
+  const mockServices: Service[] = [
+    { id: '1', clinicId: '1', name: 'General Consultation' },
+    { id: '2', clinicId: '1', name: 'Follow-up Visit' },
+    { id: '3', clinicId: '1', name: 'Annual Physical' }
+  ];
+
+  const mockClinics: Clinic[] = [
+    {
+      id: '1',
+      organizationId: 'org1',
+      name: 'City Health Center',
+      address: '123 Main St, Toronto, ON',
+      phone: '(555) 123-4567',
+      timezone: 'America/Toronto',
+      avatarUrl: 'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      isDeleted: false
+    }
+  ];
+
+  // Transform appointments to include nested data
+  const extendedAppointments: ExtendedAppointment[] = appointments.map(apt => ({
+    ...apt,
+    specialist: mockSpecialists.find(s => s.id === apt.specialistId),
+    service: mockServices.find(s => s.id === apt.serviceId),
+    clinic: mockClinics.find(c => c.id === apt.clinicId),
+    scheduledAt: apt.startTime // Alias for backward compatibility
+  }));
   
   // Simulate data loading
   useEffect(() => {
@@ -42,13 +103,13 @@ export default function DashboardPage() {
   }, []);
 
   // Get next appointment (sorted by date, closest first)
-  const nextAppointment = appointments
-    .filter(apt => new Date(apt.scheduledAt) > new Date())
-    .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
+  const nextAppointment = extendedAppointments
+    .filter(apt => new Date(apt.startTime) > new Date())
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0];
 
   // Get upcoming appointments count
-  const upcomingAppointmentsCount = appointments.filter(apt => 
-    new Date(apt.scheduledAt) > new Date()
+  const upcomingAppointmentsCount = extendedAppointments.filter(apt => 
+    new Date(apt.startTime) > new Date()
   ).length;
 
   // Mock data for balances and stats
@@ -151,7 +212,7 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <motion.div className="mb-8" variants={itemVariants}>
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, {account?.patient?.firstName || 'Patient'}!
+            Welcome back, {account?.firstName || 'Patient'}!
           </h1>
           <p className="text-muted-foreground">
             Here's what's happening with your healthcare journey.
@@ -251,11 +312,11 @@ export default function DashboardPage() {
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Date & Time</span>
                       <span className="font-medium">
-                        {new Date(nextAppointment.scheduledAt).toLocaleDateString('en-US', { 
+                        {nextAppointment.scheduledAt && new Date(nextAppointment.scheduledAt).toLocaleDateString('en-US', { 
                           weekday: 'short',
                           month: 'short', 
                           day: 'numeric' 
-                        })} at {new Date(nextAppointment.scheduledAt).toLocaleTimeString('en-US', { 
+                        })} at {nextAppointment.scheduledAt && new Date(nextAppointment.scheduledAt).toLocaleTimeString('en-US', { 
                           hour: 'numeric', 
                           minute: '2-digit' 
                         })}

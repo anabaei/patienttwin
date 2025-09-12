@@ -175,7 +175,7 @@ function InsuranceContent() {
           <div>
             <h2 className="text-xl font-semibold mb-4">Popular Insurance Providers</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {providers.slice(0, 6).map((provider: any) => (
+              {providers.slice(0, 6).map((provider) => (
                 <Card 
                   key={provider.id}
                   className="cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 group"

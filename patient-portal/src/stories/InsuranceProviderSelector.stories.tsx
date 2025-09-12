@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { InsuranceProviderSelector, type InsuranceProvider } from '@/components/insurance/insurance-provider-selector';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const mockProviders: InsuranceProvider[] = [
@@ -103,8 +103,8 @@ const InteractiveWrapper = ({
 export const Default: Story = {
   render: (args) => (
     <InteractiveWrapper
-      providers={mockProviders}
       {...args}
+      providers={mockProviders}
     />
   ),
 };
@@ -112,9 +112,9 @@ export const Default: Story = {
 export const TwoColumns: Story = {
   render: (args) => (
     <InteractiveWrapper
+      {...args}
       providers={mockProviders}
       gridCols="2"
-      {...args}
     />
   ),
 };
@@ -122,9 +122,9 @@ export const TwoColumns: Story = {
 export const ThreeColumns: Story = {
   render: (args) => (
     <InteractiveWrapper
+      {...args}
       providers={mockProviders}
       gridCols="3"
-      {...args}
     />
   ),
 };
@@ -132,9 +132,9 @@ export const ThreeColumns: Story = {
 export const SingleColumn: Story = {
   render: (args) => (
     <InteractiveWrapper
+      {...args}
       providers={mockProviders}
       gridCols="1"
-      {...args}
     />
   ),
 };
@@ -142,9 +142,9 @@ export const SingleColumn: Story = {
 export const WithCategories: Story = {
   render: (args) => (
     <InteractiveWrapper
+      {...args}
       providers={mockProviders}
       showCategories={true}
-      {...args}
     />
   ),
 };
@@ -152,9 +152,9 @@ export const WithCategories: Story = {
 export const PopularProvidersOnly: Story = {
   render: (args) => (
     <InteractiveWrapper
+      {...args}
       providers={mockProviders.filter(p => p.isPopular)}
       gridCols="3"
-      {...args}
     />
   ),
 };
@@ -162,9 +162,9 @@ export const PopularProvidersOnly: Story = {
 export const EmptyState: Story = {
   render: (args) => (
     <InsuranceProviderSelector
+      {...args}
       providers={[]}
       onProviderSelect={() => {}}
-      {...args}
     />
   ),
 };
@@ -172,10 +172,10 @@ export const EmptyState: Story = {
 export const PreSelected: Story = {
   render: (args) => (
     <InsuranceProviderSelector
+      {...args}
       providers={mockProviders}
       selectedProviderId="sunlife"
       onProviderSelect={() => {}}
-      {...args}
     />
   ),
 };

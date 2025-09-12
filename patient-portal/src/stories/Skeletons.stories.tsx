@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { 
-  DashboardBalanceSkeleton,
-  DashboardAppointmentSkeleton,
-  DashboardStatsSkeleton,
-  DashboardNotificationsSkeleton,
-  DashboardQuickActionsSkeleton,
-  ClinicsSearchSkeleton,
-  ClinicCardSkeleton,
-  InsurancePageSkeleton,
-  InsuranceCardSkeleton,
-  InsuranceProviderCardSkeleton,
-  InsuranceConnectionSkeleton,
-  PageSkeleton
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import {
+    ClinicCardSkeleton,
+    ClinicsSearchSkeleton,
+    DashboardAppointmentSkeleton,
+    DashboardBalanceSkeleton,
+    DashboardNotificationsSkeleton,
+    DashboardQuickActionsSkeleton,
+    DashboardStatsSkeleton,
+    InsuranceCardSkeleton,
+    InsuranceConnectionSkeleton,
+    InsurancePageSkeleton,
+    InsuranceProviderCardSkeleton,
+    PageSkeleton
 } from '../components/ui/skeletons';
 
 const meta: Meta = {

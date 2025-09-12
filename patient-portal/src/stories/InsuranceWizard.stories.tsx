@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { InsuranceCoverageForm, type InsuranceCoverageData } from '@/components/insurance/insurance-coverage-form';
 import { InsurancePolicyForm, type InsurancePolicyData } from '@/components/insurance/insurance-policy-form';
 import { InsuranceProviderSelector, type InsuranceProvider } from '@/components/insurance/insurance-provider-selector';
 import { InsuranceReview, type InsuranceReviewData } from '@/components/insurance/insurance-review';
 import { Wizard, type WizardStep } from '@/components/ui/wizard';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const meta: Meta = {
@@ -77,7 +77,11 @@ const InsuranceWizardFlow = ({
   showValidation = true 
 }: {
   startStep?: number;
-  preFilledData?: any;
+  preFilledData?: {
+    provider?: InsuranceProvider;
+    policy?: InsurancePolicyData;
+    coverage?: InsuranceCoverageData;
+  };
   allowSkipSteps?: boolean;
   showValidation?: boolean;
 }) => {
@@ -296,6 +300,8 @@ export const PreFilledData: Story = {
           outOfPocketMax: '2000',
           phoneNumber: '1-800-555-0199',
           isPrimary: true,
+          address: '123 Main St, Toronto, ON',
+          notes: 'Primary insurance coverage',
         },
       }}
     />
@@ -314,6 +320,7 @@ export const StartAtReviewStep: Story = {
           subscriberName: 'Jane Smith',
           subscriberDob: '1990-03-22',
           relationship: 'self',
+          groupNumber: 'GRP-002',
         },
         coverage: {
           effectiveDate: '2024-01-01',
@@ -323,6 +330,8 @@ export const StartAtReviewStep: Story = {
           outOfPocketMax: '1500',
           phoneNumber: '1-800-555-0150',
           isPrimary: false,
+          address: '456 Oak Ave, Ottawa, ON',
+          notes: 'Secondary insurance coverage',
         },
       }}
     />

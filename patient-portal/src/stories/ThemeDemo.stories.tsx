@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GoogleSignInButton } from '@/components/ui/google-signin-button';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const ThemeDemo = () => {

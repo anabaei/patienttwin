@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { InsuranceProviderSelect } from '../components/insurance/insurance-provider-select';
 
 const meta: Meta<typeof InsuranceProviderSelect> = {

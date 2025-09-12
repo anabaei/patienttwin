@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { InsuranceCoverageForm, type InsuranceCoverageData } from '@/components/insurance/insurance-coverage-form';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const meta: Meta<typeof InsuranceCoverageForm> = {

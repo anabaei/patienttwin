@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { AlertCircle, CheckCircle, CreditCard, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { BenefitsSummaryCard } from '../components/insurance/benefits-summary-card';
@@ -27,7 +27,7 @@ export const CompleteFlow: StoryObj = {
   render: () => {
     const [selectedProviderId, setSelectedProviderId] = useState('');
     const [selectedPlanId, setSelectedPlanId] = useState('');
-    const [connectedPlan, setConnectedPlan] = useState(null);
+    const [connectedPlan, setConnectedPlan] = useState<{ providerId: string; planId: string } | null>(null);
 
     const selectedProvider = { id: 'provider-1', name: 'SunLife Financial' };
     const selectedPlan = { id: 'plan-1', name: 'Premium Health Plan' };
@@ -135,7 +135,7 @@ export const CompleteFlow: StoryObj = {
                       providerId={selectedProviderId}
                       planId={selectedPlanId}
                       onSuccess={() => {
-                        setConnectedPlan({ providerId: selectedProviderId, planId: selectedPlanId });
+                        setConnectedPlan(() => ({ providerId: selectedProviderId, planId: selectedPlanId }));
                         setSelectedProviderId('');
                         setSelectedPlanId('');
                       }}

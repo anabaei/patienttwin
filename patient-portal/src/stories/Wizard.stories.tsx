@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Wizard, type WizardStep } from '@/components/ui/wizard';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const meta: Meta<typeof Wizard> = {

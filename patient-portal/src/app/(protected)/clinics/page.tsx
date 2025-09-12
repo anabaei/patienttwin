@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ClinicCardSkeleton, ClinicsSearchSkeleton } from "@/components/ui/skeletons";
 import { useDirectoryStore } from "@twinn/store";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import {
   Building2,
   Clock,
@@ -130,7 +130,7 @@ export default function ClinicsPage() {
 
   // Filter and sort clinics
   const filteredClinics = useMemo(() => {
-    let filtered = mockClinics.filter((clinic) => {
+    const filtered = mockClinics.filter((clinic) => {
       const matchesSearch = searchQuery === "" || 
         clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         clinic.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -173,7 +173,7 @@ export default function ClinicsPage() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -185,7 +185,7 @@ export default function ClinicsPage() {
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,

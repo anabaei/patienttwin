@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { InputWithIcon } from '../components/ui/input-with-icon';
-import { Mail, Lock, Eye, EyeOff, Search, X } from 'lucide-react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { Eye, EyeOff, Lock, Mail, Search, X } from 'lucide-react';
 import { useState } from 'react';
+import { InputWithIcon } from '../components/ui/input-with-icon';
 
 const meta: Meta<typeof InputWithIcon> = {
   title: 'UI/InputWithIcon',
