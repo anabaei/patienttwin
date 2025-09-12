@@ -489,16 +489,28 @@ export default function BookPage() {
   const handleNext = () => {
     switch (currentStep) {
       case 'clinic':
-        if (selectedClinic) setCurrentStep('specialist');
+        if (selectedClinic) {
+          setCurrentStep('specialist');
+          scrollToTop();
+        }
         break;
       case 'specialist':
-        if (selectedSpecialist) setCurrentStep('service');
+        if (selectedSpecialist) {
+          setCurrentStep('service');
+          scrollToTop();
+        }
         break;
       case 'service':
-        if (selectedService) setCurrentStep('datetime');
+        if (selectedService) {
+          setCurrentStep('datetime');
+          scrollToTop();
+        }
         break;
       case 'datetime':
-        if (selectedDate && selectedTime) setCurrentStep('confirmation');
+        if (selectedDate && selectedTime) {
+          setCurrentStep('confirmation');
+          scrollToTop();
+        }
         break;
     }
   };
@@ -507,17 +519,50 @@ export default function BookPage() {
     switch (currentStep) {
       case 'specialist':
         setCurrentStep('clinic');
+        scrollToTop();
         break;
       case 'service':
         setCurrentStep('specialist');
+        scrollToTop();
         break;
       case 'datetime':
         setCurrentStep('service');
+        scrollToTop();
         break;
       case 'confirmation':
         setCurrentStep('datetime');
+        scrollToTop();
         break;
     }
+  };
+
+  // Scroll to top of content area when step changes
+  const scrollToTop = () => {
+    // Use setTimeout to ensure DOM has updated with new step content
+    setTimeout(() => {
+      console.log('scrollToTop function called');
+      
+      // Since our booking page uses fixed positioning, we need to scroll our own container
+      if (scrollContainerRef.current) {
+        console.log('Scrolling our own container');
+        console.log('Container scrollTop before:', scrollContainerRef.current.scrollTop);
+        console.log('Container scrollHeight:', scrollContainerRef.current.scrollHeight);
+        console.log('Container clientHeight:', scrollContainerRef.current.clientHeight);
+        
+        scrollContainerRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+        // Also try direct assignment as backup
+        scrollContainerRef.current.scrollTop = 0;
+        
+        console.log('Container scrollTop after:', scrollContainerRef.current.scrollTop);
+        console.log('Scrolled our container to top');
+      } else {
+        console.log('Container ref not found');
+      }
+    }, 200);
   };
 
   // Credit card formatting helpers
@@ -613,124 +658,121 @@ export default function BookPage() {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <motion.div
-        ref={scrollContainerRef}
-        className="flex-1 space-y-6 overflow-y-auto pb-6"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-      {/* Header */}
-      <motion.div className="flex items-center space-x-4" variants={itemVariants}>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => router.back()}
-          className="hover:bg-muted"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Book Appointment</h1>
-          <p className="text-muted-foreground">Schedule your healthcare visit</p>
-        </div>
-      </motion.div>
-
-      {/* Progress Steps */}
-      <motion.div variants={itemVariants}>
-        <Card className="border border-border rounded-xl">
-          <CardContent className="p-4">
-            {/* Desktop Steps */}
-            <div className="hidden md:flex items-center justify-between">
-              {[
-                { key: 'clinic', label: 'Clinic', icon: MapPin },
-                { key: 'specialist', label: 'Specialist', icon: User },
-                { key: 'service', label: 'Service', icon: Stethoscope },
-                { key: 'datetime', label: 'Date & Time', icon: Calendar },
-                { key: 'confirmation', label: 'Confirm', icon: CheckCircle },
-              ].map((step, index) => {
-                const Icon = step.icon;
-                const isActive = currentStep === step.key;
-                const isCompleted = [
-                  'clinic', 'specialist', 'service', 'datetime', 'confirmation'
-                ].indexOf(currentStep) > index;
-                
-                return (
-                  <div key={step.key} className="flex items-center">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                      isActive 
-                        ? 'bg-primary border-primary text-primary-foreground' 
-                        : isCompleted 
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : 'border-muted-foreground text-muted-foreground'
-                    }`}>
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <span className={`ml-2 text-sm font-medium ${
-                      isActive ? 'text-primary' : 'text-muted-foreground'
-                    }`}>
-                      {step.label}
-                    </span>
-                    {index < 4 && (
-                      <ChevronRight className="h-4 w-4 mx-4 text-muted-foreground" />
-                    )}
-                  </div>
-                );
-              })}
+    <div className="h-full flex flex-col -m-6">
+      {/* Fixed Header with Steps */}
+      <div className="fixed top-16 left-0 right-0 bg-background border-b border-border z-40 md:left-64 md:top-0">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center space-x-3 mb-3">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => router.back()}
+              className="hover:bg-muted"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-base font-bold text-foreground">Book Appointment</h1>
+              <p className="text-xs text-muted-foreground">Schedule your healthcare visit</p>
             </div>
+          </div>
 
-            {/* Mobile Steps */}
-            <div className="md:hidden">
-              <div className="flex items-center justify-between mb-4">
-                {[
-                  { key: 'clinic', label: 'Clinic', icon: MapPin },
-                  { key: 'specialist', label: 'Specialist', icon: User },
-                  { key: 'service', label: 'Service', icon: Stethoscope },
-                  { key: 'datetime', label: 'Date & Time', icon: Calendar },
-                  { key: 'confirmation', label: 'Confirm', icon: CheckCircle },
-                ].map((step, index) => {
-                  const Icon = step.icon;
-                  const isActive = currentStep === step.key;
-                  const isCompleted = [
-                    'clinic', 'specialist', 'service', 'datetime', 'confirmation'
-                  ].indexOf(currentStep) > index;
-                  
-                  return (
-                    <div key={step.key} className="flex flex-col items-center flex-1">
-                      <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 mb-2 ${
-                        isActive 
-                          ? 'bg-primary border-primary text-primary-foreground shadow-lg' 
-                          : isCompleted 
-                          ? 'bg-green-500 border-green-500 text-white shadow-md'
-                          : 'border-muted-foreground text-muted-foreground bg-background'
-                      }`}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <span className={`text-xs font-medium text-center leading-tight ${
-                        isActive ? 'text-primary' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
-                      }`}>
-                        {step.label}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="text-center">
-                <span className="text-sm font-semibold text-foreground">
+          {/* Steps */}
+          <div>
+            <Card className="border border-border rounded-lg">
+              <CardContent className="p-2">
+                {/* Desktop Steps */}
+                <div className="hidden md:flex items-center justify-between">
                   {[
-                    { key: 'clinic', label: 'Select a Clinic' },
-                    { key: 'specialist', label: 'Choose Your Specialist' },
-                    { key: 'service', label: 'Pick a Service' },
-                    { key: 'datetime', label: 'Schedule Your Appointment' },
-                    { key: 'confirmation', label: 'Confirm Your Booking' },
-                  ].find(step => step.key === currentStep)?.label}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+                    { key: 'clinic', label: 'Clinic', icon: MapPin },
+                    { key: 'specialist', label: 'Specialist', icon: User },
+                    { key: 'service', label: 'Service', icon: Stethoscope },
+                    { key: 'datetime', label: 'Date & Time', icon: Calendar },
+                    { key: 'confirmation', label: 'Confirm', icon: CheckCircle }
+                  ].map((step, index) => {
+                    const isActive = currentStep === step.key;
+                    const isCompleted = [
+                      'clinic', 'specialist', 'service', 'datetime', 'confirmation'
+                    ].indexOf(currentStep) > index;
+                    const Icon = step.icon;
+                    
+                    return (
+                      <div key={step.key} className="flex items-center">
+                        <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
+                          isActive 
+                            ? 'bg-primary border-primary text-primary-foreground' 
+                            : isCompleted 
+                            ? 'bg-green-500 border-green-500 text-white'
+                            : 'border-muted-foreground text-muted-foreground'
+                        }`}>
+                          <Icon className="h-3 w-3" />
+                        </div>
+                        <span className={`ml-2 text-xs font-medium ${
+                          isActive ? 'text-primary' : 'text-muted-foreground'
+                        }`}>
+                          {step.label}
+                        </span>
+                        {index < 4 && (
+                          <ChevronRight className="h-3 w-3 mx-3 text-muted-foreground" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Mobile Steps - Compact */}
+                <div className="md:hidden">
+                  <div className="flex items-center justify-between">
+                    {[
+                      { key: 'clinic', label: 'Clinic', icon: MapPin },
+                      { key: 'specialist', label: 'Doctor', icon: User },
+                      { key: 'service', label: 'Service', icon: Stethoscope },
+                      { key: 'datetime', label: 'Time', icon: Calendar },
+                      { key: 'confirmation', label: 'Confirm', icon: CheckCircle }
+                    ].map((step, index) => {
+                      const isActive = currentStep === step.key;
+                      const isCompleted = [
+                        'clinic', 'specialist', 'service', 'datetime', 'confirmation'
+                      ].indexOf(currentStep) > index;
+                      const Icon = step.icon;
+                      
+                      return (
+                        <div key={step.key} className="flex flex-col items-center flex-1">
+                          <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
+                            isActive 
+                              ? 'bg-primary border-primary text-primary-foreground' 
+                              : isCompleted 
+                              ? 'bg-green-500 border-green-500 text-white'
+                              : 'border-muted-foreground text-muted-foreground'
+                          }`}>
+                            <Icon className="h-3 w-3" />
+                          </div>
+                          <span className={`text-xs font-medium text-center leading-tight mt-1 ${
+                            isActive ? 'text-primary' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
+                          }`}>
+                            {step.label}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable Content */}
+      <div ref={scrollContainerRef} className="fixed top-64 left-0 right-0 bottom-32 overflow-y-auto md:top-48 md:left-64 md:bottom-6">
+        <motion.div
+          className="p-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="space-y-4">
 
       {/* Step Content */}
       <motion.div variants={itemVariants}>
@@ -1219,44 +1261,48 @@ export default function BookPage() {
           </div>
         )}
       </motion.div>
+          </div>
+        </motion.div>
+      </div>
 
-      {/* Navigation Buttons */}
-      <motion.div 
-        className="flex justify-between pt-4" 
-        variants={itemVariants}
-      >
-        <Button
-          variant="outline"
-          onClick={handleBack}
-          disabled={currentStep === 'clinic'}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-        
-        {currentStep === 'confirmation' ? (
+      {/* Fixed Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-6 z-50 md:left-64 md:pb-6 pb-24">
+        <div className="flex justify-between gap-4">
           <Button
-            onClick={handleBookAppointment}
-            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+            variant="outline"
+            onClick={handleBack}
+            disabled={currentStep === 'clinic'}
+            className="flex-1 max-w-[120px]"
           >
-            <CheckCircle className="h-4 w-4 mr-2" />
-            Book Appointment
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
           </Button>
-        ) : (
-          <Button
-            onClick={handleNext}
-            disabled={
-              (currentStep === 'clinic' && !selectedClinic) ||
-              (currentStep === 'specialist' && !selectedSpecialist) ||
-              (currentStep === 'service' && !selectedService) ||
-              (currentStep === 'datetime' && (!selectedDate || !selectedTime))
-            }
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
-        )}
-      </motion.div>
+          
+          {currentStep === 'confirmation' ? (
+            <Button
+              onClick={handleBookAppointment}
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 flex-1 max-w-[180px]"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Book Appointment
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              disabled={
+                (currentStep === 'clinic' && !selectedClinic) ||
+                (currentStep === 'specialist' && !selectedSpecialist) ||
+                (currentStep === 'service' && !selectedService) ||
+                (currentStep === 'datetime' && (!selectedDate || !selectedTime))
+              }
+              className="flex-1 max-w-[120px]"
+            >
+              Next
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Success Dialog */}
       {showSuccessDialog && (
@@ -1295,7 +1341,6 @@ export default function BookPage() {
           </motion.div>
         </motion.div>
       )}
-      </motion.div>
     </div>
   );
 }
