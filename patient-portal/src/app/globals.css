@@ -76,10 +76,41 @@
     @apply bg-background text-foreground;
     height: 100%;
     overflow: hidden;
+    /* Prevent zoom on mobile */
+    touch-action: manipulation;
+    /* Ensure proper mobile viewport */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
   
   #__next {
     height: 100%;
+  }
+  
+  /* Mobile viewport fixes */
+  @media (max-width: 768px) {
+    html {
+      /* Prevent horizontal scroll */
+      overflow-x: hidden;
+      /* Use dynamic viewport height for mobile */
+      height: 100dvh;
+    }
+    
+    body {
+      /* Ensure proper mobile layout */
+      position: relative;
+      height: 100%;
+      min-height: 100vh;
+      min-height: 100dvh; /* Dynamic viewport height for mobile */
+      /* Prevent zoom on mobile */
+      touch-action: manipulation;
+    }
+    
+    #__next {
+      height: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
   }
 }
 
