@@ -1,7 +1,0 @@
-{
-  "buildCommand": "cd .. && pnpm install && cd patient-portal && pnpm build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "installCommand": "cd .. && pnpm install",
-  "rootDirectory": "patient-portal"
-}
