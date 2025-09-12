@@ -42,7 +42,7 @@ export function BottomNavigation() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border safe-bottom">
+    <nav className="flex-shrink-0 bg-background border-t border-border safe-bottom">
       <div className="grid grid-cols-4 h-16">
         {bottomNavItems.map((item) => {
           const isActive = pathname === item.href;

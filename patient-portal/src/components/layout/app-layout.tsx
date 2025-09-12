@@ -30,14 +30,14 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <RequireAuth>
-      <div className="min-h-screen bg-background">
+      <div className="h-screen bg-background flex flex-col overflow-hidden">
         {/* Desktop/Tablet Layout */}
-        <div className="hidden md:flex min-h-screen">
+        <div className="hidden md:flex h-full">
           {/* Sidebar */}
           <Sidebar />
           
           {/* Main Content */}
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
             <div className="p-6">
               {children}
             </div>
@@ -45,9 +45,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         {/* Mobile Layout */}
-        <div className="md:hidden flex flex-col min-h-screen">
+        <div className="md:hidden flex flex-col h-full">
           {/* Mobile Header */}
-          <header className="sticky top-0 z-50 bg-background border-b border-border">
+          <header className="flex-shrink-0 bg-background border-b border-border">
             <div className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-3">
                 <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -72,7 +72,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </header>
 
           {/* Mobile Main Content */}
-          <main className="flex-1 overflow-auto pb-20">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
             <div className="p-4">
               {children}
             </div>
