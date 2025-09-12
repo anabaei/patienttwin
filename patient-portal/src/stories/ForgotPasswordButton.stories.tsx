@@ -80,13 +80,13 @@ export const InFormContext: Story = {
   decorators: [
     (Story) => (
       <div className="w-80 space-y-4">
-        <div className="h-10 bg-gray-100 rounded flex items-center px-3 text-sm">
+        <div className="h-10 bg-muted rounded flex items-center px-3 text-sm text-muted-foreground">
           Password Input Field
         </div>
         <div className="flex justify-end">
           <Story />
         </div>
-        <div className="h-10 bg-blue-100 rounded flex items-center justify-center text-sm">
+        <div className="h-10 bg-primary rounded flex items-center justify-center text-sm text-primary-foreground">
           Sign In Button
         </div>
       </div>

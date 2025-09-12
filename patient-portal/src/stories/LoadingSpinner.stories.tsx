@@ -61,6 +61,6 @@ export const CustomStyling: Story = {
   args: {
     size: 'md',
     text: 'Custom styled spinner',
-    className: 'text-blue-600',
+    className: 'text-primary',
   },
 };

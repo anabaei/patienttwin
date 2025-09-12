@@ -15,9 +15,9 @@ const GoogleSignInButton = React.forwardRef<HTMLButtonElement, GoogleSignInButto
         type="button"
         variant="outline"
         className={cn(
-          "w-full relative bg-white hover:bg-gray-50 border-gray-300 text-gray-700 font-medium",
-          "transition-all duration-200 hover:shadow-md hover:border-gray-400",
-          "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+          "w-full relative bg-card hover:bg-muted border-border text-card-foreground font-medium",
+          "transition-all duration-200 hover:shadow-md hover:border-muted-foreground",
+          "focus:ring-2 focus:ring-ring focus:ring-offset-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           className
         )}

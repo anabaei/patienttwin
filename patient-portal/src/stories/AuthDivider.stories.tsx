@@ -65,11 +65,11 @@ export const InFormContext: Story = {
   decorators: [
     (Story) => (
       <div className="w-80 space-y-4">
-        <div className="h-10 bg-gray-100 rounded flex items-center justify-center text-sm">
+        <div className="h-10 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
           Google Sign-In Button
         </div>
         <Story />
-        <div className="h-10 bg-gray-100 rounded flex items-center justify-center text-sm">
+        <div className="h-10 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
           Email/Password Form
         </div>
       </div>
