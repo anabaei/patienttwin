@@ -1,12 +1,25 @@
-import { StoreTest } from "@/components/store-test";
+"use client";
+
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuthStore } from "@twinn/store";
 import { Calendar, Heart, MapPin, Shield } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const { account } = useAuthStore();
+  const router = useRouter();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (account) {
+      router.push("/dashboard");
+    }
+  }, [account, router]);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

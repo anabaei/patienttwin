@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 432 576" style="enable-background:new 0 0 432 576;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:#DBDCDC;}
+	.st3{fill:#00383B;}
+</style>
+<g id="Clear_Space" class="st0">
+	<g class="st1">
+		<rect x="-95.39" y="180" class="st2" width="51.25" height="51.25"/>
+		<rect x="476.14" y="180" class="st2" width="51.25" height="51.25"/>
+		<rect x="-95.39" y="344.75" class="st2" width="51.25" height="51.25"/>
+		<rect x="476.14" y="344.75" class="st2" width="51.25" height="51.25"/>
+	</g>
+</g>
+<g id="Logo">
+	<g>
+		<polygon class="st3" points="399.96,34.43 168.67,263.69 215.52,310.95 332.7,194.8 332.1,331.92 215.13,447.87 99.18,330.89 
+			100.2,99.66 238.19,100.27 305.03,34.01 33.94,32.82 32.51,358.16 214.71,541.98 398.52,359.78 		"/>
+		<polygon class="st3" points="391.55,518.1 383.6,530.59 375.77,518.03 370.75,518.01 370.64,543.06 375.65,543.09 375.73,526.42 
+			383.32,538.61 383.82,538.61 391.51,526.49 391.44,543.16 396.45,543.18 396.56,518.12 		"/>
+		<polygon class="st3" points="348.32,517.91 348.3,522.54 355.57,522.57 355.48,543 360.49,543.02 360.58,522.6 367.72,522.63 
+			367.74,517.99 		"/>
+	</g>
+</g>
+</svg>

@@ -9,6 +9,7 @@ export { useAuthStore } from './stores/auth';
 export { useAvailabilityStore } from './stores/availability';
 export { useDirectoryStore } from './stores/directory';
 export { useInsuranceStore } from './stores/insurance';
+export { useNavigationStore } from './stores/navigation';
 
 // Utilities
 export * from './utils/availability';

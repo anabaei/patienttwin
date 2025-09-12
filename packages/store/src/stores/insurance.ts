@@ -24,27 +24,48 @@ interface InsuranceActions {
 
 type InsuranceStore = InsuranceState & InsuranceActions;
 
-// Mock insurance data
+// Mock insurance data - Canadian providers
+// Note: logoUrl is kept for backward compatibility, but new components should use the logo service
 const mockProviders: InsuranceProvider[] = [
   {
-    id: 'provider-001',
-    name: 'Ontario Health Insurance Plan (OHIP)',
-    logoUrl: '/logos/ohip.png',
+    id: 'sunlife',
+    name: 'Sun Life',
+    logoUrl: '/Sun-Life-Financial-01.svg',
   },
   {
-    id: 'provider-002',
-    name: 'Sun Life Financial',
-    logoUrl: '/logos/sunlife.png',
-  },
-  {
-    id: 'provider-003',
+    id: 'manulife',
     name: 'Manulife',
-    logoUrl: '/logos/manulife.png',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Manulife_logo_%282018%29.svg',
   },
   {
-    id: 'provider-004',
+    id: 'rbc',
+    name: 'RBC Insurance',
+    logoUrl: '/rbc-4.svg',
+  },
+  {
+    id: 'greenshield',
+    name: 'Green Shield Canada',
+    logoUrl: '/GreenShield_Shield_DarkGreen_RGB.svg',
+  },
+  {
+    id: 'desjardins',
+    name: 'Desjardins Insurance',
+    logoUrl: 'https://www.desjardins.com/etc/designs/desjardins/style/images/desjardins-logo.svg',
+  },
+  {
+    id: 'greatwest',
     name: 'Great-West Life',
-    logoUrl: '/logos/gwl.png',
+    logoUrl: 'https://www.greatwestlife.com/content/dam/gwl/about-us/media-centre/logos/GWL_Lockup_RGB.png',
+  },
+  {
+    id: 'bluecross',
+    name: 'Blue Cross',
+    logoUrl: 'https://www.medavie.bluecross.ca/-/media/medaviebc/images/logo/medavie-blue-cross-logo.png',
+  },
+  {
+    id: 'chambers',
+    name: 'Chambers of Commerce',
+    logoUrl: 'https://www.chamberplan.ca/wp-content/uploads/2020/10/chambers-logo.png',
   },
 ];
 

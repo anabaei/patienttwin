@@ -53,19 +53,27 @@
   - **Estimate**: M
   - **Dependencies**: ST-003
   - **Acceptance**: Connect plan and display coverage
-- [ ] **[UI-003]** Clinic search page (filters, results, sorting)
+- [x] **[UI-003]** Responsive navigation layout (sidebar for desktop, bottom nav for mobile)
+  - **Estimate**: M
+  - **Dependencies**: ST-002
+  - **Acceptance**: Navigation adapts to screen size, active states work, mobile menu functions
+- [x] **[UI-003.5]** Dashboard page with priority-based layout (balances first, appointments, notifications)
+  - **Estimate**: M
+  - **Dependencies**: ST-002, ST-003, ST-006
+  - **Acceptance**: Account balances prominently displayed, next appointment shown, mock data integrated, mobile-responsive
+- [x] **[UI-004]** Clinic search page (filters, results, sorting)
   - **Estimate**: M
   - **Dependencies**: ST-004
-  - **Acceptance**: Filtered list with badges and distance
-- [ ] **[UI-004]** Specialist selection and availability calendar
+  - **Acceptance**: Filtered list with badges and distance, mobile-first design, animations, Ontario data integration
+- [ ] **[UI-005]** Specialist selection and availability calendar
   - **Estimate**: M
   - **Dependencies**: ST-005
   - **Acceptance**: Select specialist and slot (keyed by clinicId + specialistId + serviceOptionId)
-- [ ] **[UI-005]** Booking wizard steps and stepper
+- [ ] **[UI-006]** Booking wizard steps and stepper
   - **Estimate**: M
   - **Dependencies**: UI-002, UI-003, UI-004, ST-006
   - **Acceptance**: Complete flow to confirmation (Appointment created with serviceId + serviceOptionId, Coverage shown)
-- [ ] **[UI-006]** Appointments list with reschedule/cancel dialogs
+- [ ] **[UI-007]** Appointments list with reschedule/cancel dialogs
   - **Estimate**: M
   - **Dependencies**: ST-006
   - **Acceptance**: Manage appointments

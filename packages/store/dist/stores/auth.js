@@ -70,6 +70,31 @@ export const useAuthStore = create()(persist((set) => ({
             });
         }
     },
+    forgotPassword: async (email) => {
+        set({ isLoading: true, error: null });
+        try {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Mock validation - accept any email for demo
+            if (email.includes('@')) {
+                // In a real app, this would send a reset email
+                console.log(`Password reset email sent to: ${email}`);
+                set({
+                    isLoading: false,
+                    error: null
+                });
+            }
+            else {
+                throw new Error('Please enter a valid email address');
+            }
+        }
+        catch (error) {
+            set({
+                error: error instanceof Error ? error.message : 'Failed to send reset email',
+                isLoading: false
+            });
+        }
+    },
     signOut: () => {
         set({
             account: null,
