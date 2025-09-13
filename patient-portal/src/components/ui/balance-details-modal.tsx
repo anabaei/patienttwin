@@ -21,6 +21,7 @@ import {
     TrendingUp,
     Waves
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Import the type from the store
 import type { HealthcareBalance } from "@twinn/store";
@@ -74,6 +75,7 @@ interface BalanceDetailsModalProps {
 export function BalanceDetailsModal({ balanceId, children }: BalanceDetailsModalProps) {
   const { getBalanceById } = useHealthcareBalancesStore();
   const balance = getBalanceById(balanceId);
+  const router = useRouter();
   
   if (!balance) return null;
 
@@ -236,7 +238,10 @@ export function BalanceDetailsModal({ balanceId, children }: BalanceDetailsModal
 
         {/* Fixed Footer */}
         <div className="border-t bg-background p-6 pt-4">
-          <Button className="w-full">
+          <Button 
+            className="w-full"
+            onClick={() => router.push('/clinics')}
+          >
             <ExternalLink className="h-4 w-4 mr-2" />
             Find Providers
           </Button>
