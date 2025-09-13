@@ -3,27 +3,28 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { HealthcareBalanceCard } from "@/components/ui/healthcare-balance-card";
+import { CompactBalanceSummary } from "@/components/ui/compact-balance-summary";
+import { HealthcareBalanceCarousel } from "@/components/ui/healthcare-balance-carousel";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { motion } from "framer-motion";
 import {
-    ArrowDown,
-    ArrowUp,
-    Calendar,
-    CheckCircle,
-    Clock,
-    CreditCard,
-    DollarSign,
-    Download,
-    FileText,
-    Filter,
-    Heart,
-    Search,
-    TrendingUp,
-    Wallet,
-    XCircle
+  ArrowDown,
+  ArrowUp,
+  Calendar,
+  CheckCircle,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Download,
+  FileText,
+  Filter,
+  Heart,
+  Search,
+  TrendingUp,
+  Wallet,
+  XCircle
 } from "lucide-react";
 import { useState } from "react";
 
@@ -380,60 +381,78 @@ export default function BalancesPage() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="container mx-auto p-4 space-y-6 max-w-7xl">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="container mx-auto p-4 space-y-4 max-w-7xl">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Account Balances</h1>
-          <p className="text-muted-foreground">Manage your healthcare savings and view transaction history</p>
+          <h1 className="text-lg font-semibold">Account Balances</h1>
+          <p className="text-sm text-muted-foreground">Healthcare savings and transaction history</p>
         </div>
-        <Button className="flex items-center gap-2">
-          <Download className="h-4 w-4" />
-          Export Statement
+        <Button size="sm" variant="outline" className="flex items-center gap-2">
+          <Download className="h-3 w-3" />
+          Export
         </Button>
       </div>
 
-      {/* Balance Overview */}
-      <HealthcareBalanceCard balances={mockBalances} />
+      {/* Compact Account Balances Summary */}
+      <CompactBalanceSummary 
+        balances={{
+          hsa: 1250,
+          wsa: 3200,
+          total: 4450
+        }} 
+      />
+
+      {/* Healthcare Service Balances - Top Priority */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Heart className="h-5 w-5" />
+            Healthcare Service Balances
+          </CardTitle>
+          <CardDescription>
+            View your available balances for specific healthcare services with expiry and renewal information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <HealthcareBalanceCarousel />
+        </CardContent>
+      </Card>
+
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4">
+      <Card>
+        <CardContent className="p-3 md:p-4">
+          <div className="space-y-3">
+            {/* Total Spent */}
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Spent</p>
-                <p className="text-2xl font-bold text-red-600">${totalSpent.toFixed(2)}</p>
+              <div className="flex items-center gap-2">
+                <ArrowDown className="h-4 w-4 text-red-600" />
+                <span className="text-sm font-medium text-muted-foreground">Total Spent</span>
               </div>
-              <ArrowDown className="h-8 w-8 text-red-600" />
+              <span className="text-lg font-bold text-red-600">${totalSpent.toFixed(2)}</span>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
+            
+            {/* Total Contributed */}
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Contributed</p>
-                <p className="text-2xl font-bold text-green-600">${totalContributed.toFixed(2)}</p>
+              <div className="flex items-center gap-2">
+                <ArrowUp className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-muted-foreground">Total Contributed</span>
               </div>
-              <ArrowUp className="h-8 w-8 text-green-600" />
+              <span className="text-lg font-bold text-green-600">${totalContributed.toFixed(2)}</span>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
+            
+            {/* Transactions */}
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Transactions</p>
-                <p className="text-2xl font-bold">{mockTransactions.length}</p>
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-muted-foreground">Transactions</span>
               </div>
-              <FileText className="h-8 w-8 text-blue-600" />
+              <span className="text-lg font-bold">{mockTransactions.length}</span>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Transaction History */}
       <Card>

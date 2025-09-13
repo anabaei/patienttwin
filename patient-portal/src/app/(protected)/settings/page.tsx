@@ -1,11 +1,11 @@
 "use client";
 
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { ThemeSwitcher } from "@/components/ui/shadcn-io/theme-switcher";
 import { Switch } from "@/components/ui/switch";
 import {
     Bell,
@@ -23,7 +23,7 @@ import { useTheme } from "next-themes";
 import { useState } from "react";
 
 export default function SettingsPage() {
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -100,12 +100,10 @@ export default function SettingsPage() {
                 Choose your preferred color scheme
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="capitalize">
-                {theme}
-              </Badge>
-              <ThemeToggle />
-            </div>
+            <ThemeSwitcher 
+              value={theme as 'light' | 'dark' | 'system'}
+              onChange={setTheme}
+            />
           </div>
 
           <Separator />

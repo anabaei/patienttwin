@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { HealthcareBalanceCard } from "@/components/ui/healthcare-balance-card";
+import { CompactBalanceSummary } from "@/components/ui/compact-balance-summary";
+import { DashboardHealthcareCarousel } from "@/components/ui/dashboard-healthcare-carousel";
 import {
   DashboardAppointmentSkeleton,
   DashboardBalanceSkeleton,
@@ -240,9 +241,34 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        {/* Priority 1: Account Balances - Most Important */}
+        {/* Priority 1: Healthcare Service Balances - Most Important */}
         <motion.div className="mb-6" variants={itemVariants}>
-          <HealthcareBalanceCard balances={mockBalances} />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                Healthcare Services
+              </CardTitle>
+              <CardDescription>
+                Your available healthcare service balances
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DashboardHealthcareCarousel />
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Account Balance Summary */}
+        <motion.div className="mb-6" variants={itemVariants}>
+          <CompactBalanceSummary
+            balances={{
+              hsa: 1250,
+              wsa: 3200,
+              total: 4450
+            }}
+            showDetails={true}
+          />
         </motion.div>
 
         {/* Priority 2: Next Appointment */}
