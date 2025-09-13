@@ -381,7 +381,7 @@ export default function BalancesPage() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="container mx-auto p-4 space-y-4 max-w-7xl">
+    <div className="space-y-4">
       {/* Compact Header */}
       <div className="flex items-center justify-between">
         <div>

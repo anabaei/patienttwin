@@ -36,7 +36,7 @@ const getIconComponent = (iconName: string) => {
     Grid3X3
   };
   const IconComponent = iconMap[iconName as keyof typeof iconMap];
-  return IconComponent ? <IconComponent className="h-6 w-6" /> : null;
+  return IconComponent ? <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" /> : null;
 };
 
 const getStatusBadge = (status: HealthcareBalance['status']) => {
@@ -88,7 +88,7 @@ export function BalanceDetailsModal({ balanceId, children }: BalanceDetailsModal
         {/* Header */}
         <SheetHeader className="p-6 pb-4">
           <SheetTitle className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg bg-muted ${balance.color}`}>
+            <div className={`p-2 rounded-lg bg-background border border-border ${balance.color}`}>
               {getIconComponent(balance.iconName)}
             </div>
             <div>

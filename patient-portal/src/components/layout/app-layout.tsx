@@ -45,9 +45,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         {/* Mobile Layout */}
-        <div className="md:hidden flex flex-col h-full min-h-screen">
+        <div className="md:hidden flex flex-col h-screen">
           {/* Mobile Header */}
-          <header className="flex-shrink-0 bg-background border-b border-border safe-top">
+          <header className="flex-shrink-0 bg-background border-b border-border safe-top sticky top-0 z-50">
             <div className="flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-3">
                 <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -73,7 +73,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Mobile Main Content */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-            <div className="p-4 pb-24">
+            <div className="p-4 pb-24 pt-4">
               {children}
             </div>
           </main>

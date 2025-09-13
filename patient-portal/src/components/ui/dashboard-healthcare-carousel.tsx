@@ -33,7 +33,7 @@ const getIconComponent = (iconName: string) => {
     Grid3X3
   };
   const IconComponent = iconMap[iconName as keyof typeof iconMap];
-  return IconComponent ? <IconComponent className="h-6 w-6" /> : null;
+  return IconComponent ? <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" /> : null;
 };
 
 const getStatusBadge = (status: HealthcareBalance['status']) => {
@@ -129,7 +129,7 @@ export function DashboardHealthcareCarousel() {
                   <div className="relative z-10 p-3 flex flex-col justify-between h-full">
                     {/* Top section - Icon */}
                     <div className="flex items-start justify-start">
-                      <div className="p-2 rounded-lg bg-white/80 backdrop-blur-sm">
+                      <div className="p-1.5 sm:p-2 rounded-lg bg-background/80 backdrop-blur-sm border border-border/20">
                         <div className={balance.color}>
                           {getIconComponent(balance.iconName)}
                         </div>

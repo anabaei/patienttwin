@@ -1,5 +1,5 @@
-export * from './types';
 export type { HealthcareBalance } from './stores/healthcare-balances';
+export * from './types';
 export { useAppointmentsStore } from './stores/appointments';
 export { useAuthStore } from './stores/auth';
 export { useAvailabilityStore } from './stores/availability';
