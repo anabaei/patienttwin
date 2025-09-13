@@ -692,9 +692,9 @@ export default function BookPage() {
     <div className="h-full flex flex-col -m-6">
       {/* Fixed Header with Steps */}
       <div className="fixed top-16 left-0 right-0 bg-background border-b border-border z-40 md:left-64 md:top-0">
-        <div className="p-6">
+        <div className="p-4">
           {/* Header */}
-          <div className="flex items-center space-x-3 mb-3">
+          <div className="flex items-center space-x-3 mb-2">
             <Button 
               variant="ghost" 
               size="sm"
@@ -709,10 +709,11 @@ export default function BookPage() {
             </div>
           </div>
 
+          {/* Divider */}
+          <div className="border-t border-border my-3"></div>
+
           {/* Steps */}
           <div>
-            <Card className="border border-border rounded-lg">
-              <CardContent className="p-2">
                 {/* Desktop Steps */}
                 <div className="hidden md:flex items-center justify-between">
                   {[
@@ -789,14 +790,12 @@ export default function BookPage() {
                     })}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
 
       {/* Scrollable Content */}
-      <div ref={scrollContainerRef} className="fixed top-64 left-0 right-0 bottom-32 overflow-y-auto md:top-48 md:left-64 md:bottom-6">
+      <div ref={scrollContainerRef} className="fixed top-48 left-0 right-0 bottom-20 overflow-y-auto md:top-40 md:left-64 md:bottom-16">
         <motion.div
           className="p-6"
           variants={containerVariants}
@@ -1469,7 +1468,7 @@ export default function BookPage() {
       </div>
 
       {/* Fixed Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-6 z-50 md:left-64 md:pb-6 pb-24">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-50 md:left-64 md:pb-3 pb-20">
         <div className="flex justify-between gap-4">
           <Button
             variant="outline"
