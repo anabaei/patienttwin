@@ -1,8 +1,8 @@
 // Main export file for @twinn/store package
 
 // Types
-export * from './types';
 export type { HealthcareBalance } from './stores/healthcare-balances';
+export * from './types';
 
 // Stores
 export { useAppointmentsStore } from './stores/appointments';

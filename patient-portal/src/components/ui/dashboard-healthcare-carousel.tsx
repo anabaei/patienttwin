@@ -6,17 +6,17 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { useHealthcareBalancesStore } from "@twinn/store";
 import { motion } from "framer-motion";
 import {
-  Activity,
-  Brain,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  Grid3X3,
-  Leaf,
-  Sparkles,
-  Stethoscope,
-  Waves,
-  XCircle
+    Activity,
+    Brain,
+    CheckCircle,
+    Clock,
+    DollarSign,
+    Grid3X3,
+    Leaf,
+    Sparkles,
+    Stethoscope,
+    Waves,
+    XCircle
 } from "lucide-react";
 
 // Import the type from the store
