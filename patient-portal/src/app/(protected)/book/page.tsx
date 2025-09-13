@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -17,7 +16,9 @@ import {
     Calendar,
     CheckCircle,
     ChevronRight,
+    Clock,
     CreditCard,
+    DollarSign,
     Heart,
     Mail,
     MapPin,
@@ -692,7 +693,7 @@ export default function BookPage() {
     <div className="h-full flex flex-col -m-6">
       {/* Fixed Header with Steps */}
       <div className="fixed top-16 left-0 right-0 bg-background border-b border-border z-40 md:left-64 md:top-0">
-        <div className="p-4">
+        <div className="">
           {/* Header */}
           <div className="flex items-center space-x-3 mb-2">
             <Button 
@@ -710,10 +711,10 @@ export default function BookPage() {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-border my-3"></div>
+          <div className="border-t border-border my-1"></div>
 
           {/* Steps */}
-          <div>
+          <div className="py-3">
                 {/* Desktop Steps */}
                 <div className="hidden md:flex items-center justify-between">
                   {[
@@ -727,26 +728,37 @@ export default function BookPage() {
                     const isCompleted = [
                       'clinic', 'specialist', 'service', 'datetime', 'confirmation'
                     ].indexOf(currentStep) > index;
+                    const canNavigate = isCompleted || isActive;
                     const Icon = step.icon;
                     
                     return (
-                      <div key={step.key} className="flex items-center">
-                        <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
-                          isActive 
-                            ? 'bg-primary border-primary text-primary-foreground' 
-                            : isCompleted 
-                            ? 'bg-green-500 border-green-500 text-white'
-                            : 'border-muted-foreground text-muted-foreground'
-                        }`}>
-                          <Icon className="h-3 w-3" />
-                        </div>
-                        <span className={`ml-2 text-xs font-medium ${
-                          isActive ? 'text-primary' : 'text-muted-foreground'
-                        }`}>
-                          {step.label}
-                        </span>
+                      <div key={step.key} className="flex items-center flex-1">
+                        <button
+                          onClick={() => canNavigate && setCurrentStep(step.key as BookingStep)}
+                          disabled={!canNavigate}
+                          className={`flex items-center ${canNavigate ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                        >
+                          <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
+                            isActive 
+                              ? 'bg-primary border-primary text-primary-foreground' 
+                              : isCompleted 
+                              ? 'bg-green-500 border-green-500 text-white'
+                              : 'border-muted-foreground text-muted-foreground'
+                          }`}>
+                            <Icon className="h-3 w-3" />
+                          </div>
+                          <span className={`ml-2 text-xs font-medium ${
+                            isActive ? 'text-primary' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
+                          }`}>
+                            {step.label}
+                          </span>
+                        </button>
                         {index < 4 && (
-                          <ChevronRight className="h-3 w-3 mx-3 text-muted-foreground" />
+                          <div className="flex-1 mx-4">
+                            <div className={`h-0.5 ${
+                              isCompleted ? 'bg-green-500' : 'bg-muted-foreground/30'
+                            }`}></div>
+                          </div>
                         )}
                       </div>
                     );
@@ -755,7 +767,7 @@ export default function BookPage() {
 
                 {/* Mobile Steps - Compact */}
                 <div className="md:hidden">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between relative">
                     {[
                       { key: 'clinic', label: 'Clinic', icon: MapPin },
                       { key: 'specialist', label: 'Doctor', icon: User },
@@ -767,35 +779,50 @@ export default function BookPage() {
                       const isCompleted = [
                         'clinic', 'specialist', 'service', 'datetime', 'confirmation'
                       ].indexOf(currentStep) > index;
+                      const canNavigate = isCompleted || isActive;
                       const Icon = step.icon;
                       
                       return (
-                        <div key={step.key} className="flex flex-col items-center flex-1">
-                          <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
-                            isActive 
-                              ? 'bg-primary border-primary text-primary-foreground' 
-                              : isCompleted 
-                              ? 'bg-green-500 border-green-500 text-white'
-                              : 'border-muted-foreground text-muted-foreground'
-                          }`}>
-                            <Icon className="h-3 w-3" />
-                          </div>
-                          <span className={`text-xs font-medium text-center leading-tight mt-1 ${
-                            isActive ? 'text-primary' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
-                          }`}>
-                            {step.label}
-                          </span>
+                        <div key={step.key} className="flex flex-col items-center flex-1 relative">
+                          <button
+                            onClick={() => canNavigate && setCurrentStep(step.key as BookingStep)}
+                            disabled={!canNavigate}
+                            className={`flex flex-col items-center ${canNavigate ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                          >
+                            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 relative z-10 ${
+                              isActive 
+                                ? 'bg-primary border-primary text-primary-foreground' 
+                                : isCompleted 
+                                ? 'bg-green-500 border-green-500 text-white'
+                                : 'border-muted-foreground text-muted-foreground'
+                            }`}>
+                              <Icon className="h-3 w-3" />
+                            </div>
+                            <span className={`text-xs font-medium text-center leading-tight mt-1 ${
+                              isActive ? 'text-primary' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
+                            }`}>
+                              {step.label}
+                            </span>
+                          </button>
+                          {index < 4 && (
+                            <div className="absolute top-3 left-1/2 w-full h-0.5 -translate-y-1/2 z-0">
+                              <div className={`h-full ${
+                                isCompleted ? 'bg-green-500' : 'bg-muted-foreground/30'
+                              }`} style={{ width: 'calc(100% - 12px)', marginLeft: '12px' }}></div>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
                   </div>
                 </div>
           </div>
+          
         </div>
       </div>
 
       {/* Scrollable Content */}
-      <div ref={scrollContainerRef} className="fixed top-48 left-0 right-0 bottom-20 overflow-y-auto md:top-40 md:left-64 md:bottom-16">
+      <div ref={scrollContainerRef} className="fixed top-40 left-0 right-0 bottom-20 overflow-y-auto md:top-36 md:left-64 md:bottom-16">
         <motion.div
           className="p-6"
           variants={containerVariants}
@@ -970,24 +997,39 @@ export default function BookPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-foreground mb-3">Appointment Details</h3>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Clinic:</span>
-                        <span className="text-foreground">{clinic.name}</span>
+                  <div className="bg-muted/30 border border-border/50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      <h3 className="font-semibold text-foreground">Appointment Details</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Clinic</span>
+                        </div>
+                        <span className="text-foreground font-medium">{clinic.name}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Specialist:</span>
-                        <span className="text-foreground">{specialist.name}</span>
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Specialist</span>
+                        </div>
+                        <span className="text-foreground font-medium">{specialist.name}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Service:</span>
-                        <span className="text-foreground">{service.name}</span>
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <Stethoscope className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Service</span>
+                        </div>
+                        <span className="text-foreground font-medium">{service.name}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Date:</span>
-                        <span className="text-foreground">
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Date</span>
+                        </div>
+                        <span className="text-foreground font-medium">
                           {selectedDate && new Date(selectedDate).toLocaleDateString('en-US', { 
                             weekday: 'long', 
                             month: 'long', 
@@ -995,36 +1037,50 @@ export default function BookPage() {
                           })}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Time:</span>
-                        <span className="text-foreground">{selectedTime}</span>
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Time</span>
+                        </div>
+                        <span className="text-foreground font-medium">{selectedTime}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Duration:</span>
-                        <span className="text-foreground">{service.duration} minutes</span>
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Duration</span>
+                        </div>
+                        <span className="text-foreground font-medium">{service.duration} minutes</span>
                       </div>
-                      <Separator />
-                      <div className="flex justify-between font-semibold">
-                        <span className="text-foreground">Total Cost:</span>
-                        <span className="text-foreground">${service.price}</span>
+                      <div className="flex items-center justify-between py-3 bg-primary/5 rounded-md px-3 mt-2">
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="h-5 w-5 text-primary" />
+                          <span className="text-foreground font-semibold">Total Cost</span>
+                        </div>
+                        <span className="text-primary font-bold text-lg">${service.price}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Insurance Coverage Info */}
-                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                    <div className="flex items-center mb-2">
-                      <Shield className="h-5 w-5 text-green-600 mr-2" />
-                      <h3 className="font-semibold text-green-800 dark:text-green-200">Insurance Coverage</h3>
+                  <div className="bg-muted/30 border border-border/50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h3 className="font-semibold text-foreground">Insurance Coverage</h3>
                     </div>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-green-700 dark:text-green-300">Insurance covers:</span>
-                        <span className="font-medium text-green-800 dark:text-green-200">$99.20</span>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between py-2 border-b border-border/30">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Insurance covers</span>
+                        </div>
+                        <span className="text-foreground font-medium">$99.20</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-700 dark:text-green-300">Your remaining balance:</span>
-                        <span className="font-medium text-green-800 dark:text-green-200">$25.80</span>
+                      <div className="flex items-center justify-between py-2">
+                        <div className="flex items-center gap-2">
+                          <Wallet className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Your remaining balance</span>
+                        </div>
+                        <span className="text-foreground font-medium">$25.80</span>
                       </div>
                     </div>
                   </div>
