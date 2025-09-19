@@ -142,9 +142,20 @@ export default function ClinicDetailsPage() {
 
       {/* Clinic Banner */}
       <motion.div variants={itemVariants}>
-        <Card className="overflow-hidden border border-border rounded-xl">
-          <div className="relative h-48 sm:h-64 bg-gradient-to-br from-primary/20 to-primary/5">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        <Card className="overflow-hidden border border-border rounded-xl p-0">
+          <div className="relative h-48 sm:h-64">
+            {clinic.avatarUrl ? (
+              <>
+                <img
+                  src={clinic.avatarUrl}
+                  alt={clinic.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              </>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5" />
+            )}
             <div className="absolute bottom-4 left-4 right-4 text-white">
               <h2 className="text-xl sm:text-2xl font-bold mb-2">{clinic.name}</h2>
               <div className="flex items-center text-white/90">

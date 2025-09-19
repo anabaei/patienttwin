@@ -82,13 +82,13 @@ function InsuranceContent() {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
-              <Shield className="h-6 w-6 text-primary-foreground" />
+          <div className="flex items-start sm:items-center gap-4">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
+              <Shield className="h-8 w-8 text-primary-foreground" />
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold">Insurance Coverage</h1>
-              <p className="text-muted-foreground text-sm sm:text-base">Manage your insurance providers and coverage</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">Insurance Coverage</h1>
+              <p className="text-muted-foreground text-sm sm:text-base mt-1">Manage your insurance providers and coverage</p>
             </div>
           </div>
           <Button asChild className="w-full sm:w-auto">

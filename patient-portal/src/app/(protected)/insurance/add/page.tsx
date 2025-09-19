@@ -247,44 +247,46 @@ function AddInsuranceContent() {
   ]);
   
   return (
-    <div className="bg-gradient-to-br from-background to-muted/30 min-h-screen py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background p-4 pb-24">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <Button
-              variant="ghost"
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-4">
+            <Button 
+              variant="ghost" 
               size="sm"
               onClick={() => router.push("/insurance")}
-              className="p-2"
+              className="hover:bg-muted p-2"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
-              <Shield className="h-6 w-6 text-primary-foreground" />
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
+              <Shield className="h-8 w-8 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Add Insurance Provider</h1>
-              <p className="text-muted-foreground">Add your insurance information for seamless booking</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">Add Insurance Provider</h1>
+              <p className="text-muted-foreground text-sm sm:text-base mt-1">Add your insurance information for seamless booking</p>
             </div>
           </div>
         </div>
         
         {/* Wizard */}
-        <Wizard
-          steps={steps}
-          currentStep={currentStep}
-          onStepChange={handleStepChange}
-          onComplete={handleSubmit}
-          onCancel={() => router.push("/insurance")}
-          isSubmitting={isSubmitting}
-          submitButtonText="Add Insurance"
-          className={cn(errors.provider && "ring-2 ring-destructive")}
-        />
-        
-        {errors.provider && (
-          <p className="text-sm text-destructive mt-2 text-center">{errors.provider}</p>
-        )}
+        <div className="max-w-4xl mx-auto">
+          <Wizard
+            steps={steps}
+            currentStep={currentStep}
+            onStepChange={handleStepChange}
+            onComplete={handleSubmit}
+            onCancel={() => router.push("/insurance")}
+            isSubmitting={isSubmitting}
+            submitButtonText="Add Insurance"
+            className={cn(errors.provider && "ring-2 ring-destructive")}
+          />
+          
+          {errors.provider && (
+            <p className="text-sm text-destructive mt-2 text-center">{errors.provider}</p>
+          )}
+        </div>
       </div>
     </div>
   );

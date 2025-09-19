@@ -1,5 +1,6 @@
 "use client";
 
+import { useSettingsStore } from "@twinn/store";
 import { motion, useReducedMotion } from "framer-motion";
 import { BrainCog } from "lucide-react";
 
@@ -10,8 +11,9 @@ export function ChatFab() {
   const isReducedMotion = useReducedMotion();
   const isOpen = useChatStore((state) => state.isOpen);
   const toggle = useChatStore((state) => state.toggle);
+  const chatSupport = useSettingsStore((state) => state.chatSupport);
 
-  const isVisible = !isOpen;
+  const isVisible = !isOpen && chatSupport;
 
   const animateProps = { 
     opacity: isVisible ? 1 : 0, 

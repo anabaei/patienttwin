@@ -11,6 +11,7 @@ const generateMockClinics = () => [
         timezone: 'America/Toronto',
         latitude: 43.6588,
         longitude: -79.3883,
+        avatarUrl: 'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         isDeleted: false,
     },
     {
@@ -22,6 +23,7 @@ const generateMockClinics = () => [
         timezone: 'America/Toronto',
         latitude: 43.7225,
         longitude: -79.3733,
+        avatarUrl: 'https://images.unsplash.com/photo-1642844613096-7b743b7d9915?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         isDeleted: false,
     },
     {
@@ -33,6 +35,7 @@ const generateMockClinics = () => [
         timezone: 'America/Toronto',
         latitude: 45.3844,
         longitude: -75.7103,
+        avatarUrl: 'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         isDeleted: false,
     },
     {
@@ -44,6 +47,7 @@ const generateMockClinics = () => [
         timezone: 'America/Toronto',
         latitude: 43.2609,
         longitude: -79.9192,
+        avatarUrl: 'https://plus.unsplash.com/premium_photo-1753267731393-dd5785991e5c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         isDeleted: false,
     },
     {
@@ -55,6 +59,7 @@ const generateMockClinics = () => [
         timezone: 'America/Toronto',
         latitude: 42.9849,
         longitude: -81.2453,
+        avatarUrl: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         isDeleted: false,
     },
 ];

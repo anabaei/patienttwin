@@ -7,55 +7,45 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ThemeSwitcher } from "@/components/ui/shadcn-io/theme-switcher";
 import { Switch } from "@/components/ui/switch";
+import { useSettingsStore } from "@twinn/store";
 import {
-    Bell,
-    Download,
-    Eye,
-    Globe,
-    Mail,
-    Palette,
-    Shield,
-    Smartphone,
-    Trash2,
-    User
+  Bell,
+  Download,
+  Eye,
+  Globe,
+  Mail,
+  MessageCircle,
+  Palette,
+  Shield,
+  Smartphone,
+  Trash2,
+  User
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    sms: false,
-    appointmentReminders: true,
-    insuranceUpdates: true,
-    marketing: false,
-  });
-
-  const [privacy, setPrivacy] = useState({
-    profileVisibility: "private",
-    dataSharing: false,
-    analytics: true,
-    locationTracking: false,
-  });
-
-  const [appearance, setAppearance] = useState({
-    compactMode: false,
-    largeText: false,
-    highContrast: false,
-  });
+  const { 
+    chatSupport, 
+    notifications, 
+    privacy, 
+    appearance, 
+    setChatSupport, 
+    setNotification, 
+    setPrivacy, 
+    setAppearance 
+  } = useSettingsStore();
 
   const handleNotificationChange = (key: string, value: boolean) => {
-    setNotifications(prev => ({ ...prev, [key]: value }));
+    setNotification(key as keyof typeof notifications, value);
   };
 
   const handlePrivacyChange = (key: string, value: boolean | string) => {
-    setPrivacy(prev => ({ ...prev, [key]: value }));
+    setPrivacy(key as keyof typeof privacy, value);
   };
 
   const handleAppearanceChange = (key: string, value: boolean) => {
-    setAppearance(prev => ({ ...prev, [key]: value }));
+    setAppearance(key as keyof typeof appearance, value);
   };
 
   const exportData = () => {
@@ -285,6 +275,26 @@ export default function SettingsPage() {
               id="marketing"
               checked={notifications.marketing}
               onCheckedChange={(checked) => handleNotificationChange('marketing', checked)}
+            />
+          </div>
+
+          <Separator />
+
+          {/* Chat Support */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="chat-support" className="text-base font-medium flex items-center gap-2">
+                <MessageCircle className="h-4 w-4" />
+                Chat Support
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Enable or disable the floating chat support button
+              </p>
+            </div>
+            <Switch
+              id="chat-support"
+              checked={chatSupport}
+              onCheckedChange={setChatSupport}
             />
           </div>
         </CardContent>
