@@ -1,11 +1,11 @@
 import { create } from 'zustand';
-// Mock data - centralized source of truth
+// Mock data - paramedical services based on insurance form ($300 per practitioner)
 const mockHealthcareBalances = [
     {
         id: '1',
-        type: 'massage',
-        name: 'Massage Therapy',
-        amount: 450.00,
+        type: 'massage-therapist',
+        name: 'Massage Therapist',
+        amount: 300.00,
         expiryDate: '2024-12-31',
         renewalDate: '2025-01-01',
         description: 'Therapeutic massage sessions for stress relief and muscle recovery',
@@ -34,15 +34,15 @@ const mockHealthcareBalances = [
         ],
         coverage: {
             maxPerSession: 100,
-            maxPerYear: 1000,
+            maxPerYear: 300,
             copay: 0
         }
     },
     {
         id: '2',
-        type: 'chiro',
-        name: 'Chiropractic Care',
-        amount: 320.00,
+        type: 'chiropractor',
+        name: 'Chiropractor',
+        amount: 300.00,
         expiryDate: '2024-11-15',
         renewalDate: '2024-11-16',
         description: 'Spinal adjustments and musculoskeletal treatment',
@@ -65,15 +65,15 @@ const mockHealthcareBalances = [
         ],
         coverage: {
             maxPerSession: 80,
-            maxPerYear: 800,
+            maxPerYear: 300,
             copay: 10
         }
     },
     {
         id: '3',
-        type: 'mental-health',
-        name: 'Mental Health',
-        amount: 600.00,
+        type: 'psychologist',
+        name: 'Psychologist',
+        amount: 300.00,
         expiryDate: '2025-03-31',
         renewalDate: '2025-04-01',
         description: 'Counseling and therapy sessions for mental wellness',
@@ -96,15 +96,15 @@ const mockHealthcareBalances = [
         ],
         coverage: {
             maxPerSession: 150,
-            maxPerYear: 2000,
+            maxPerYear: 300,
             copay: 20
         }
     },
     {
         id: '4',
-        type: 'physical-therapy',
-        name: 'Physical Therapy',
-        amount: 280.00,
+        type: 'physiotherapist',
+        name: 'Physiotherapist',
+        amount: 300.00,
         expiryDate: '2024-10-30',
         renewalDate: '2024-10-31',
         description: 'Rehabilitation and physical therapy services',
@@ -127,15 +127,15 @@ const mockHealthcareBalances = [
         ],
         coverage: {
             maxPerSession: 90,
-            maxPerYear: 900,
+            maxPerYear: 300,
             copay: 15
         }
     },
     {
         id: '5',
-        type: 'acupuncture',
-        name: 'Acupuncture',
-        amount: 180.00,
+        type: 'acupuncturist',
+        name: 'Acupuncturist',
+        amount: 300.00,
         expiryDate: '2024-09-20',
         renewalDate: '2024-09-21',
         description: 'Traditional Chinese medicine acupuncture treatments',
@@ -157,83 +157,226 @@ const mockHealthcareBalances = [
             'Holistic healing'
         ],
         coverage: {
-            maxPerSession: 95,
-            maxPerYear: 950,
-            copay: 12
+            maxPerSession: 100,
+            maxPerYear: 300,
+            copay: 25
         }
     },
     {
         id: '6',
-        type: 'nutrition',
-        name: 'Nutrition Counseling',
-        amount: 150.00,
-        expiryDate: '2025-02-28',
-        renewalDate: '2025-03-01',
+        type: 'dietician',
+        name: 'Dietician',
+        amount: 300.00,
+        expiryDate: '2025-01-15',
+        renewalDate: '2025-01-16',
         description: 'Nutritional guidance and dietary counseling',
         iconName: 'Leaf',
-        color: 'text-teal-600',
+        color: 'text-emerald-600',
         status: 'active',
         usageHistory: [
             {
-                date: '2024-01-15',
+                date: '2024-01-22',
                 service: 'Nutrition Consultation',
-                amount: -75.00,
-                provider: 'Health & Wellness'
+                amount: -60.00,
+                provider: 'Healthy Living Clinic'
             }
         ],
         benefits: [
             'Dietary planning',
-            'Nutritional education',
             'Weight management',
-            'Health optimization'
+            'Health condition support',
+            'Lifestyle counseling'
         ],
         coverage: {
             maxPerSession: 80,
-            maxPerYear: 800,
-            copay: 10
+            maxPerYear: 300,
+            copay: 20
         }
     },
     {
         id: '7',
-        type: 'other',
-        name: 'Other Services',
-        amount: 610.00, // 280 + 180 + 150 (Physical Therapy + Acupuncture + Nutrition)
-        expiryDate: '2025-02-28',
-        renewalDate: '2025-03-01',
-        description: 'Combined balance for Physical Therapy, Acupuncture, and Nutrition Counseling services',
-        iconName: 'Grid3X3',
-        color: 'text-slate-600',
+        type: 'audiologist',
+        name: 'Audiologist',
+        amount: 300.00,
+        expiryDate: '2024-12-31',
+        renewalDate: '2025-01-01',
+        description: 'Hearing assessment and auditory rehabilitation services',
+        iconName: 'Activity',
+        color: 'text-blue-600',
         status: 'active',
         usageHistory: [
             {
-                date: '2024-01-20',
-                service: 'Physical Therapy Session',
-                amount: -85.00,
-                provider: 'Rehab Center'
-            },
-            {
-                date: '2024-01-18',
-                service: 'Acupuncture Treatment',
-                amount: -90.00,
-                provider: 'Wellness Clinic'
-            },
-            {
-                date: '2024-01-15',
-                service: 'Nutrition Consultation',
-                amount: -75.00,
-                provider: 'Health & Wellness'
+                date: '2024-01-25',
+                service: 'Hearing Assessment',
+                amount: -120.00,
+                provider: 'Hearing Center'
             }
         ],
         benefits: [
-            'Physical therapy sessions',
-            'Acupuncture treatments',
-            'Nutrition counseling',
-            'Comprehensive wellness care'
+            'Hearing assessments',
+            'Hearing aid fitting',
+            'Auditory rehabilitation',
+            'Tinnitus management'
+        ],
+        coverage: {
+            maxPerSession: 120,
+            maxPerYear: 300,
+            copay: 0
+        }
+    },
+    {
+        id: '8',
+        type: 'occupational-therapist',
+        name: 'Occupational Therapist',
+        amount: 300.00,
+        expiryDate: '2024-11-30',
+        renewalDate: '2024-12-01',
+        description: 'Occupational therapy for daily living skills and rehabilitation',
+        iconName: 'Activity',
+        color: 'text-purple-600',
+        status: 'active',
+        usageHistory: [
+            {
+                date: '2024-01-28',
+                service: 'OT Assessment',
+                amount: -100.00,
+                provider: 'Rehabilitation Services'
+            }
+        ],
+        benefits: [
+            'Daily living skills',
+            'Workplace accommodations',
+            'Cognitive rehabilitation',
+            'Adaptive equipment training'
         ],
         coverage: {
             maxPerSession: 100,
-            maxPerYear: 1500,
+            maxPerYear: 300,
+            copay: 10
+        }
+    },
+    {
+        id: '9',
+        type: 'osteopath',
+        name: 'Osteopath',
+        amount: 300.00,
+        expiryDate: '2025-02-28',
+        renewalDate: '2025-03-01',
+        description: 'Osteopathic manipulative treatment and holistic care',
+        iconName: 'Activity',
+        color: 'text-indigo-600',
+        status: 'active',
+        usageHistory: [
+            {
+                date: '2024-01-30',
+                service: 'Osteopathic Treatment',
+                amount: -110.00,
+                provider: 'Osteopathic Clinic'
+            }
+        ],
+        benefits: [
+            'Manual therapy',
+            'Holistic assessment',
+            'Pain management',
+            'Structural alignment'
+        ],
+        coverage: {
+            maxPerSession: 110,
+            maxPerYear: 300,
             copay: 15
+        }
+    },
+    {
+        id: '10',
+        type: 'podiatrist',
+        name: 'Podiatrist or Chiropodist',
+        amount: 300.00,
+        expiryDate: '2024-12-15',
+        renewalDate: '2024-12-16',
+        description: 'Foot and ankle care, diabetic foot care, and podiatric surgery',
+        iconName: 'Activity',
+        color: 'text-teal-600',
+        status: 'active',
+        usageHistory: [
+            {
+                date: '2024-02-01',
+                service: 'Foot Assessment',
+                amount: -95.00,
+                provider: 'Foot Care Clinic'
+            }
+        ],
+        benefits: [
+            'Foot and ankle care',
+            'Diabetic foot care',
+            'Orthotic fitting',
+            'Minor surgical procedures'
+        ],
+        coverage: {
+            maxPerSession: 95,
+            maxPerYear: 300,
+            copay: 5
+        }
+    },
+    {
+        id: '11',
+        type: 'speech-therapist',
+        name: 'Speech Therapist',
+        amount: 300.00,
+        expiryDate: '2025-04-30',
+        renewalDate: '2025-05-01',
+        description: 'Speech, language, and communication therapy services',
+        iconName: 'Activity',
+        color: 'text-pink-600',
+        status: 'active',
+        usageHistory: [
+            {
+                date: '2024-02-03',
+                service: 'Speech Therapy Session',
+                amount: -85.00,
+                provider: 'Communication Center'
+            }
+        ],
+        benefits: [
+            'Speech therapy',
+            'Language development',
+            'Swallowing therapy',
+            'Communication aids'
+        ],
+        coverage: {
+            maxPerSession: 85,
+            maxPerYear: 300,
+            copay: 15
+        }
+    },
+    {
+        id: '12',
+        type: 'naturopath',
+        name: 'Naturopath',
+        amount: 300.00,
+        expiryDate: '2024-12-31',
+        renewalDate: '2025-01-01',
+        description: 'Natural medicine and holistic health approaches',
+        iconName: 'Leaf',
+        color: 'text-green-500',
+        status: 'active',
+        usageHistory: [
+            {
+                date: '2024-02-05',
+                service: 'Naturopathic Consultation',
+                amount: -90.00,
+                provider: 'Natural Health Clinic'
+            }
+        ],
+        benefits: [
+            'Natural medicine',
+            'Holistic assessment',
+            'Lifestyle counseling',
+            'Preventive care'
+        ],
+        coverage: {
+            maxPerSession: 90,
+            maxPerYear: 300,
+            copay: 10
         }
     }
 ];

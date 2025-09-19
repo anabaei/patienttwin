@@ -8,245 +8,32 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDirectoryStore } from '@twinn/store';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
-    ArrowLeft,
-    Building2,
-    Calendar,
-    CheckCircle,
-    ChevronRight,
-    Clock,
-    CreditCard,
-    DollarSign,
-    Heart,
-    Mail,
-    MapPin,
-    Shield,
-    Star,
-    Stethoscope,
-    User,
-    Wallet,
-    Zap
+  ArrowLeft,
+  Building2,
+  Calendar,
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Heart,
+  Mail,
+  MapPin,
+  Shield,
+  Star,
+  Stethoscope,
+  User,
+  Wallet,
+  Zap
 } from 'lucide-react';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
-// Mock data - same as clinic details page
-const mockClinicDetails = {
-  '1': {
-    id: '1',
-    name: 'City Health Center',
-    address: '123 Main St, Toronto, ON',
-    distance: 1.2,
-    rating: 4.8,
-    reviewCount: 127,
-    image: 'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '1',
-        name: 'Dr. Amelia Chen',
-        specialty: 'Internal Medicine',
-        rating: 4.9,
-        image: 'https://i.pravatar.cc/100?img=1',
-        nextAvailable: 'Tomorrow, 2:00 PM',
-        experience: '8 years',
-        education: 'MD, University of Toronto',
-      },
-      {
-        id: '2',
-        name: 'Dr. Michael Rodriguez',
-        specialty: 'Family Medicine',
-        rating: 4.7,
-        image: 'https://i.pravatar.cc/100?img=2',
-        nextAvailable: 'Today, 4:30 PM',
-        experience: '12 years',
-        education: 'MD, McMaster University',
-      },
-    ],
-    services: [
-      { id: '1', name: 'General Consultation', duration: 30, price: 150 },
-      { id: '2', name: 'Follow-up Visit', duration: 15, price: 100 },
-      { id: '3', name: 'Annual Physical', duration: 60, price: 200 },
-      { id: '4', name: 'Urgent Care', duration: 20, price: 180 },
-    ],
-  },
-  '2': {
-    id: '2',
-    name: 'Family Wellness Clinic',
-    address: '456 Oak Ave, Ottawa, ON',
-    distance: 2.5,
-    rating: 4.5,
-    reviewCount: 89,
-    image: 'https://images.unsplash.com/photo-1642844613096-7b743b7d9915?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '4',
-        name: 'Dr. Jennifer Lee',
-        specialty: 'Family Medicine',
-        rating: 4.6,
-        image: 'https://i.pravatar.cc/100?img=4',
-        nextAvailable: 'Wednesday, 11:00 AM',
-        experience: '10 years',
-        education: 'MD, University of Ottawa',
-      },
-    ],
-    services: [
-      { id: '5', name: 'Family Medicine Consultation', duration: 30, price: 140 },
-      { id: '6', name: 'Pediatric Visit', duration: 25, price: 120 },
-      { id: '7', name: 'Mental Health Consultation', duration: 45, price: 180 },
-    ],
-  },
-  '3': {
-    id: '3',
-    name: 'Community Medical Group',
-    address: '789 Pine Ln, Hamilton, ON',
-    distance: 3.1,
-    rating: 4.2,
-    reviewCount: 76,
-    image: 'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '6',
-        name: 'Dr. David Wilson',
-        specialty: 'Internal Medicine',
-        rating: 4.3,
-        image: 'https://i.pravatar.cc/100?img=6',
-        nextAvailable: 'Thursday, 1:30 PM',
-        experience: '15 years',
-        education: 'MD, McMaster University',
-      },
-      {
-        id: '7',
-        name: 'Dr. Lisa Chen',
-        specialty: 'Cardiology',
-        rating: 4.5,
-        image: 'https://i.pravatar.cc/100?img=7',
-        nextAvailable: 'Next week, Tuesday',
-        experience: '12 years',
-        education: 'MD, University of Toronto',
-      },
-    ],
-    services: [
-      { id: '8', name: 'Internal Medicine Consultation', duration: 45, price: 160 },
-      { id: '9', name: 'Cardiology Consultation', duration: 60, price: 220 },
-      { id: '10', name: 'Dermatology Consultation', duration: 30, price: 150 },
-      { id: '11', name: 'Health Screening', duration: 30, price: 120 },
-    ],
-  },
-  '4': {
-    id: '4',
-    name: 'Downtown Medical Center',
-    address: '321 Business Blvd, London, ON',
-    distance: 0.8,
-    rating: 4.7,
-    reviewCount: 142,
-    image: 'https://plus.unsplash.com/premium_photo-1753267731393-dd5785991e5c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '8',
-        name: 'Dr. Maria Garcia',
-        specialty: 'Primary Care',
-        rating: 4.8,
-        image: 'https://i.pravatar.cc/100?img=8',
-        nextAvailable: 'Today, 5:00 PM',
-        experience: '9 years',
-        education: 'MD, University of Western Ontario',
-      },
-      {
-        id: '9',
-        name: 'Dr. James Thompson',
-        specialty: 'Urgent Care',
-        rating: 4.6,
-        image: 'https://i.pravatar.cc/100?img=9',
-        nextAvailable: 'Tomorrow, 10:00 AM',
-        experience: '11 years',
-        education: 'MD, Queen\'s University',
-      },
-    ],
-    services: [
-      { id: '12', name: 'Primary Care Consultation', duration: 30, price: 140 },
-      { id: '13', name: 'Urgent Care Visit', duration: 25, price: 180 },
-      { id: '14', name: 'Lab Services', duration: 15, price: 80 },
-      { id: '15', name: 'X-Ray & Imaging', duration: 20, price: 120 },
-    ],
-  },
-  '5': {
-    id: '5',
-    name: 'Kitchener Health Hub',
-    address: '567 Queen St, Kitchener, ON',
-    distance: 4.2,
-    rating: 4.6,
-    reviewCount: 98,
-    image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '10',
-        name: 'Dr. Emily Watson',
-        specialty: 'Urgent Care',
-        rating: 4.7,
-        image: 'https://i.pravatar.cc/100?img=10',
-        nextAvailable: 'Today, 3:00 PM',
-        experience: '8 years',
-        education: 'MD, University of Waterloo',
-      },
-      {
-        id: '11',
-        name: 'Dr. Mark Anderson',
-        specialty: 'Pediatrics',
-        rating: 4.9,
-        image: 'https://i.pravatar.cc/100?img=11',
-        nextAvailable: 'Monday, 9:00 AM',
-        experience: '13 years',
-        education: 'MD, McMaster University',
-      },
-    ],
-    services: [
-      { id: '16', name: 'Urgent Care Visit', duration: 25, price: 180 },
-      { id: '17', name: 'Pediatric Consultation', duration: 30, price: 130 },
-      { id: '18', name: 'Mental Health Consultation', duration: 45, price: 180 },
-      { id: '19', name: 'Telehealth Consultation', duration: 20, price: 100 },
-    ],
-  },
-  '6': {
-    id: '6',
-    name: 'Windsor Medical Plaza',
-    address: '890 Riverside Dr, Windsor, ON',
-    distance: 5.8,
-    rating: 4.3,
-    reviewCount: 64,
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    specialists: [
-      {
-        id: '12',
-        name: 'Dr. Patricia Brown',
-        specialty: 'Family Medicine',
-        rating: 4.4,
-        image: 'https://i.pravatar.cc/100?img=12',
-        nextAvailable: 'Wednesday, 2:00 PM',
-        experience: '16 years',
-        education: 'MD, University of Windsor',
-      },
-      {
-        id: '13',
-        name: 'Dr. Kevin Lee',
-        specialty: 'Physical Therapy',
-        rating: 4.6,
-        image: 'https://i.pravatar.cc/100?img=13',
-        nextAvailable: 'Friday, 11:00 AM',
-        experience: '7 years',
-        education: 'DPT, University of Toronto',
-      },
-    ],
-    services: [
-      { id: '20', name: 'Family Medicine Consultation', duration: 30, price: 140 },
-      { id: '21', name: 'Physical Therapy Session', duration: 45, price: 120 },
-      { id: '22', name: 'Cardiology Consultation', duration: 60, price: 220 },
-      { id: '23', name: 'Health Screening', duration: 30, price: 100 },
-    ],
-  },
-};
 
 // Generate availability for September, October, November (excluding weekends and past days)
 const generateAvailabilityDates = () => {
@@ -367,43 +154,69 @@ const mockAvailability: ClinicAvailability = {
 };
 
 // Mock payment options based on connected insurance
-const mockPaymentOptions = [
-  {
-    id: 'insurance-coverage',
-    name: 'Insurance Coverage',
-    amount: '$300.00',
-    covered: '$99.20',
-    description: 'Your insurance covers 80% of the service cost up to $300 annually.',
-    type: 'insurance',
-  },
-  {
-    id: 'hsa-health',
-    name: 'Health Spending Account (HSA)',
-    amount: '$1,500.00',
-    covered: '$25.80',
-    description: 'Use your Health Spending Account to cover remaining costs.',
-    type: 'hsa',
-  },
-  {
-    id: 'hsa-wellness',
-    name: 'Wellness Spending Account (HSA)',
-    amount: '$300.00',
-    description: 'Use your Wellness Spending Account for wellness services.',
-    type: 'hsa',
-  },
-  {
-    id: 'credit-card',
-    name: 'Credit Card',
-    description: 'Pay with your credit card for the full amount.',
-    type: 'credit',
-  },
-];
+const getMockPaymentOptions = (servicePrice: number) => {
+  const insuranceCoverageRate = 0.8;
+  const maxAnnualCoverage = 300;
+  const insuranceCovered = Math.min(servicePrice * insuranceCoverageRate, maxAnnualCoverage);
+  const remainingBalance = Math.max(servicePrice - insuranceCovered, 0);
+
+  return [
+    {
+      id: 'insurance-coverage',
+      name: 'Insurance Coverage',
+      amount: `$${maxAnnualCoverage.toFixed(2)}`,
+      covered: `$${insuranceCovered.toFixed(2)}`,
+      description: 'Your insurance covers 80% of the service cost up to $300 annually.',
+      type: 'insurance',
+    },
+    {
+      id: 'hsa-health',
+      name: 'Health Spending Account (HSA)',
+      amount: '$1,500.00',
+      covered: `$${remainingBalance.toFixed(2)}`,
+      description: 'Use your Health Spending Account to cover remaining costs.',
+      type: 'hsa',
+    },
+    {
+      id: 'hsa-wellness',
+      name: 'Wellness Spending Account (HSA)',
+      amount: '$300.00',
+      description: 'Use your Wellness Spending Account for wellness services.',
+      type: 'hsa',
+    },
+    {
+      id: 'credit-card',
+      name: 'Credit Card',
+      description: 'Pay with your credit card for the full amount.',
+      type: 'credit',
+    },
+  ];
+};
 
 type BookingStep = 'clinic' | 'specialist' | 'service' | 'datetime' | 'confirmation';
+
+// Mock images for clinics (same as clinics page)
+const mockImages = [
+  'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1642844613096-7b743b7d9915?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://plus.unsplash.com/premium_photo-1753267731393-dd5785991e5c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+];
+
+// Helper function to get clinic image (consistent with clinics page)
+const getClinicImage = (clinicId: string): string => {
+  // Use a deterministic approach based on clinic ID to ensure consistency
+  const index = clinicId.split('-')[1]; // Extract number from clinic-001, clinic-002, etc.
+  const numIndex = parseInt(index) - 1; // Convert to 0-based index
+  return mockImages[numIndex % mockImages.length];
+};
 
 export default function BookPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { clinics, servicesByClinic, serviceOptionsByService, getSpecialistsByClinic, getAvailability } = useDirectoryStore();
   const [currentStep, setCurrentStep] = useState<BookingStep>('clinic');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
@@ -454,32 +267,87 @@ export default function BookPage() {
     }
   }, [currentStep]);
 
-  const clinic = selectedClinic ? mockClinicDetails[selectedClinic as keyof typeof mockClinicDetails] : null;
-  const specialist = clinic && selectedSpecialist 
-    ? clinic.specialists.find(s => s.id === selectedSpecialist) 
+  const clinic = selectedClinic ? clinics.find(c => c.id === selectedClinic) : null;
+  const specialists = selectedClinic ? getSpecialistsByClinic(selectedClinic) : [];
+  const specialist = selectedSpecialist 
+    ? specialists.find(s => s.userId === selectedSpecialist) 
     : null;
-  const service = clinic && selectedService 
-    ? clinic.services.find(s => s.id === selectedService) 
+  const services = selectedClinic ? servicesByClinic[selectedClinic] || [] : [];
+  const serviceOptions = services.flatMap(service => 
+    (serviceOptionsByService[service.id] || []).map(option => ({
+      ...option,
+      serviceName: service.name
+    }))
+  );
+  const service = selectedService 
+    ? serviceOptions.find(s => s.id === selectedService) 
     : null;
 
-  // availableDates is now generated dynamically above
-  const availableTimes = selectedClinic && selectedSpecialist && selectedDate
-    ? mockAvailability[selectedClinic]?.[selectedSpecialist]?.[selectedDate] || []
+  // Calculate insurance coverage (80% coverage up to $300 annually)
+  const insuranceCoverageRate = 0.8;
+  const maxAnnualCoverage = 300;
+  const servicePrice = service?.price || 0;
+  const insuranceCovered = Math.min(servicePrice * insuranceCoverageRate, maxAnnualCoverage);
+  const remainingBalance = Math.max(servicePrice - insuranceCovered, 0);
+
+  // Get availability from store
+  const availabilitySlots = selectedClinic && selectedSpecialist && selectedService
+    ? getAvailability({
+        clinicId: selectedClinic,
+        specialistId: selectedSpecialist,
+        serviceOptionId: selectedService,
+        from: new Date().toISOString(),
+        to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      })
+    : [];
+
+
+  // Filter slots for selected date
+  const availableTimes = selectedDate
+    ? availabilitySlots
+        .filter(slot => {
+          const slotDate = new Date(slot.start).toISOString().split('T')[0];
+          return slotDate === selectedDate;
+        })
+        .map(slot => {
+          const startTime = new Date(slot.start);
+          return startTime.toTimeString().slice(0, 5); // HH:MM format
+        })
+        .sort()
     : [];
 
   // Helper function to format availability data for the calendar component
   const getAvailabilityForSpecialist = () => {
-    if (!selectedClinic || !selectedSpecialist) return {};
+    if (!selectedClinic || !selectedSpecialist || !selectedService) return {};
     
-    const specialistAvailability = mockAvailability[selectedClinic]?.[selectedSpecialist] || {};
+    const specialistAvailabilitySlots = getAvailability({
+      clinicId: selectedClinic,
+      specialistId: selectedSpecialist,
+      serviceOptionId: selectedService,
+      from: new Date().toISOString(),
+      to: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+    });
+    
     const formattedAvailability: { [date: string]: Array<{ time: string; available: boolean; reason?: string }> } = {};
     
     // All possible time slots for a day
     const allTimeSlots = ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
     
-    Object.entries(specialistAvailability).forEach(([date, availableTimes]) => {
+    // Group slots by date
+    const slotsByDate: { [date: string]: string[] } = {};
+    specialistAvailabilitySlots.forEach(slot => {
+      const slotDate = new Date(slot.start).toISOString().split('T')[0];
+      const slotTime = new Date(slot.start).toTimeString().slice(0, 5);
+      if (!slotsByDate[slotDate]) {
+        slotsByDate[slotDate] = [];
+      }
+      slotsByDate[slotDate].push(slotTime);
+    });
+    
+    // Generate formatted availability for each date
+    Object.entries(slotsByDate).forEach(([date, availableTimes]) => {
       formattedAvailability[date] = allTimeSlots.map(time => {
-        const isAvailable = (availableTimes as string[]).includes(time);
+        const isAvailable = availableTimes.includes(time);
         return {
           time,
           available: isAvailable,
@@ -840,7 +708,7 @@ export default function BookPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {Object.values(mockClinicDetails).map((clinic) => (
+                {clinics.map((clinic) => (
                   <motion.div
                     key={clinic.id}
                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -853,21 +721,23 @@ export default function BookPage() {
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <div className="flex items-center space-x-4">
-                      <Image
-                        src={clinic.image}
-                        alt={clinic.name}
-                        width={60}
-                        height={60}
-                        className="rounded-lg object-cover"
-                      />
+                      <div className="w-15 h-15 rounded-lg overflow-hidden flex-shrink-0">
+                        <NextImage
+                          src={getClinicImage(clinic.id)}
+                          alt={clinic.name}
+                          width={60}
+                          height={60}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-foreground">{clinic.name}</h3>
                         <p className="text-sm text-muted-foreground">{clinic.address}</p>
                         <div className="flex items-center mt-1">
                           <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                          <span className="text-sm">{clinic.rating}</span>
+                          <span className="text-sm">4.5</span>
                           <span className="text-sm text-muted-foreground ml-1">
-                            ({clinic.reviewCount} reviews)
+                            (12 reviews)
                           </span>
                         </div>
                       </div>
@@ -890,15 +760,15 @@ export default function BookPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {clinic.specialists.map((specialist) => (
+                {specialists.map((specialist) => (
                   <motion.div
-                    key={specialist.id}
+                    key={specialist.userId}
                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                      selectedSpecialist === specialist.id
+                      selectedSpecialist === specialist.userId
                         ? 'border-primary bg-primary/5'
                         : 'border-border hover:border-primary/50'
                     }`}
-                    onClick={() => setSelectedSpecialist(specialist.id)}
+                    onClick={() => setSelectedSpecialist(specialist.userId)}
                     whileHover={{ scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
@@ -923,7 +793,7 @@ export default function BookPage() {
                           Next available: {specialist.nextAvailable}
                         </p>
                       </div>
-                      {selectedSpecialist === specialist.id && (
+                      {selectedSpecialist === specialist.userId && (
                         <CheckCircle className="h-5 w-5 text-primary" />
                       )}
                     </div>
@@ -942,7 +812,7 @@ export default function BookPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {clinic.services.map((service) => (
+                {serviceOptions.map((service) => (
                   <motion.div
                     key={service.id}
                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -956,7 +826,7 @@ export default function BookPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-foreground">{service.name}</h3>
+                        <h3 className="font-semibold text-foreground">{service.serviceName}</h3>
                         <p className="text-sm text-muted-foreground">
                           Duration: {service.duration} minutes
                         </p>
@@ -1022,7 +892,7 @@ export default function BookPage() {
                           <Stethoscope className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">Service</span>
                         </div>
-                        <span className="text-foreground font-medium">{service.name}</span>
+                        <span className="text-foreground font-medium">{service.serviceName}</span>
                       </div>
                       <div className="flex items-center justify-between py-2 border-b border-border/30">
                         <div className="flex items-center gap-2">
@@ -1073,14 +943,14 @@ export default function BookPage() {
                           <CheckCircle className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">Insurance covers</span>
                         </div>
-                        <span className="text-foreground font-medium">$99.20</span>
+                        <span className="text-foreground font-medium">${insuranceCovered.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center justify-between py-2">
                         <div className="flex items-center gap-2">
                           <Wallet className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">Your remaining balance</span>
                         </div>
-                        <span className="text-foreground font-medium">$25.80</span>
+                        <span className="text-foreground font-medium">${remainingBalance.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -1110,7 +980,7 @@ export default function BookPage() {
                 <CardContent className="pt-0">
                   <RadioGroup value={selectedPaymentMethod}>
                     <div className="space-y-3">
-                      {mockPaymentOptions.map((option, index) => {
+                      {getMockPaymentOptions(servicePrice).map((option, index) => {
                         const getIcon = (id: string) => {
                           switch (id) {
                             case 'hsa': return <Building2 className="h-5 w-5 text-blue-600" />;

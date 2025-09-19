@@ -50,23 +50,8 @@ const mockProviders: InsuranceProvider[] = [
   {
     id: 'desjardins',
     name: 'Desjardins Insurance',
-    logoUrl: 'https://www.desjardins.com/etc/designs/desjardins/style/images/desjardins-logo.svg',
-  },
-  {
-    id: 'greatwest',
-    name: 'Great-West Life',
-    logoUrl: 'https://www.greatwestlife.com/content/dam/gwl/about-us/media-centre/logos/GWL_Lockup_RGB.png',
-  },
-  {
-    id: 'bluecross',
-    name: 'Blue Cross',
-    logoUrl: 'https://www.medavie.bluecross.ca/-/media/medaviebc/images/logo/medavie-blue-cross-logo.png',
-  },
-  {
-    id: 'chambers',
-    name: 'Chambers of Commerce',
-    logoUrl: 'https://www.chamberplan.ca/wp-content/uploads/2020/10/chambers-logo.png',
-  },
+    logoUrl: '/desjardins.png',
+  }
 ];
 
 const mockPlans: InsurancePlan[] = [

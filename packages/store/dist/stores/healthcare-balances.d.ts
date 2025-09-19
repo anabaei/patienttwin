@@ -1,6 +1,6 @@
 export interface HealthcareBalance {
     id: string;
-    type: 'massage' | 'chiro' | 'mental-health' | 'physical-therapy' | 'acupuncture' | 'nutrition' | 'other';
+    type: 'massage-therapist' | 'chiropractor' | 'psychologist' | 'physiotherapist' | 'acupuncturist' | 'dietician' | 'audiologist' | 'occupational-therapist' | 'osteopath' | 'podiatrist' | 'speech-therapist' | 'naturopath' | 'other';
     name: string;
     amount: number;
     expiryDate: string;

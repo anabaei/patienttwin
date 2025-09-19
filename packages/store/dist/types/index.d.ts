@@ -165,6 +165,12 @@ export interface SpecialistSummary {
     rating?: number;
     serviceOptionIds: string[];
     telehealth: boolean;
+    name: string;
+    specialty: string;
+    image: string;
+    nextAvailable: string;
+    experience: string;
+    education: string;
 }
 export interface BookingSettings {
     id: string;

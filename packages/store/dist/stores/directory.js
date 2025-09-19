@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { calculateDistance } from '../utils/geo';
-// Mock data generators
+// Mock data generators - Paramedical focused clinics
 const generateMockClinics = () => [
     {
         id: 'clinic-001',
         organizationId: 'org-001',
-        name: 'Toronto General Hospital',
+        name: 'Toronto Wellness Center',
         address: '200 Elizabeth St, Toronto, ON M5G 2C4',
         phone: '+1-416-340-3111',
         timezone: 'America/Toronto',
@@ -16,7 +16,7 @@ const generateMockClinics = () => [
     {
         id: 'clinic-002',
         organizationId: 'org-001',
-        name: 'Sunnybrook Health Sciences Centre',
+        name: 'Sunnybrook Paramedical Services',
         address: '2075 Bayview Ave, Toronto, ON M4N 3M5',
         phone: '+1-416-480-6100',
         timezone: 'America/Toronto',
@@ -62,32 +62,62 @@ const generateMockServices = () => [
     {
         id: 'service-001',
         clinicId: 'clinic-001',
-        name: 'General Medicine',
+        name: 'Massage Therapy',
     },
     {
         id: 'service-002',
         clinicId: 'clinic-001',
-        name: 'Cardiology',
+        name: 'Chiropractic Care',
     },
     {
         id: 'service-003',
-        clinicId: 'clinic-002',
-        name: 'General Medicine',
+        clinicId: 'clinic-001',
+        name: 'Physiotherapy',
     },
     {
         id: 'service-004',
         clinicId: 'clinic-002',
-        name: 'Dermatology',
+        name: 'Psychology & Social Work',
     },
     {
         id: 'service-005',
-        clinicId: 'clinic-003',
-        name: 'General Medicine',
+        clinicId: 'clinic-002',
+        name: 'Acupuncture',
     },
     {
         id: 'service-006',
+        clinicId: 'clinic-002',
+        name: 'Dietician Services',
+    },
+    {
+        id: 'service-007',
         clinicId: 'clinic-003',
-        name: 'Neurology',
+        name: 'Audiologist Services',
+    },
+    {
+        id: 'service-008',
+        clinicId: 'clinic-003',
+        name: 'Occupational Therapy',
+    },
+    {
+        id: 'service-009',
+        clinicId: 'clinic-004',
+        name: 'Osteopathy',
+    },
+    {
+        id: 'service-010',
+        clinicId: 'clinic-004',
+        name: 'Podiatry',
+    },
+    {
+        id: 'service-011',
+        clinicId: 'clinic-005',
+        name: 'Speech Therapy',
+    },
+    {
+        id: 'service-012',
+        clinicId: 'clinic-005',
+        name: 'Naturopathy',
     },
 ];
 const generateMockServiceOptions = () => [
@@ -95,79 +125,310 @@ const generateMockServiceOptions = () => [
         id: 'service-opt-001',
         serviceId: 'service-001',
         type: 'CONSULTATION',
-        price: 150,
-        duration: 30,
+        price: 100,
+        duration: 60,
     },
     {
         id: 'service-opt-002',
         serviceId: 'service-002',
         type: 'CONSULTATION',
-        price: 200,
+        price: 80,
         duration: 45,
     },
     {
         id: 'service-opt-003',
         serviceId: 'service-003',
         type: 'CONSULTATION',
-        price: 150,
-        duration: 30,
+        price: 90,
+        duration: 60,
     },
     {
         id: 'service-opt-004',
         serviceId: 'service-004',
         type: 'CONSULTATION',
-        price: 180,
-        duration: 40,
+        price: 150,
+        duration: 50,
     },
     {
         id: 'service-opt-005',
         serviceId: 'service-005',
         type: 'CONSULTATION',
-        price: 150,
-        duration: 30,
+        price: 100,
+        duration: 60,
     },
     {
         id: 'service-opt-006',
         serviceId: 'service-006',
         type: 'CONSULTATION',
-        price: 250,
+        price: 80,
+        duration: 45,
+    },
+    {
+        id: 'service-opt-007',
+        serviceId: 'service-007',
+        type: 'CONSULTATION',
+        price: 120,
+        duration: 60,
+    },
+    {
+        id: 'service-opt-008',
+        serviceId: 'service-008',
+        type: 'CONSULTATION',
+        price: 100,
+        duration: 60,
+    },
+    {
+        id: 'service-opt-009',
+        serviceId: 'service-009',
+        type: 'CONSULTATION',
+        price: 110,
+        duration: 60,
+    },
+    {
+        id: 'service-opt-010',
+        serviceId: 'service-010',
+        type: 'CONSULTATION',
+        price: 95,
+        duration: 45,
+    },
+    {
+        id: 'service-opt-011',
+        serviceId: 'service-011',
+        type: 'CONSULTATION',
+        price: 85,
+        duration: 45,
+    },
+    {
+        id: 'service-opt-012',
+        serviceId: 'service-012',
+        type: 'CONSULTATION',
+        price: 90,
         duration: 60,
     },
 ];
 const generateMockSpecialists = () => [
+    // Clinic-001 specialists
     {
         userId: 'user-001',
-        clinicIds: ['clinic-001', 'clinic-002'],
-        languages: ['English', 'French'],
+        clinicIds: ['clinic-001'],
+        languages: ['English', 'Mandarin'],
         rating: 4.8,
-        serviceOptionIds: ['service-opt-001', 'service-opt-002'],
-        telehealth: true,
+        serviceOptionIds: ['service-opt-001'],
+        telehealth: false,
+        name: 'Dr. Sarah Chen',
+        specialty: 'Massage Therapy',
+        image: 'https://i.pravatar.cc/100?img=1',
+        nextAvailable: 'Tomorrow, 2:00 PM',
+        experience: '8 years',
+        education: 'RMT, Canadian College of Massage Therapy',
     },
     {
         userId: 'user-002',
         clinicIds: ['clinic-001'],
-        languages: ['English'],
-        rating: 4.6,
-        serviceOptionIds: ['service-opt-001'],
-        telehealth: false,
+        languages: ['English', 'Spanish'],
+        rating: 4.7,
+        serviceOptionIds: ['service-opt-002'],
+        telehealth: true,
+        name: 'Dr. Michael Rodriguez',
+        specialty: 'Chiropractic Care',
+        image: 'https://i.pravatar.cc/100?img=2',
+        nextAvailable: 'Today, 4:30 PM',
+        experience: '12 years',
+        education: 'DC, Canadian Memorial Chiropractic College',
     },
     {
         userId: 'user-003',
-        clinicIds: ['clinic-002', 'clinic-003'],
-        languages: ['English', 'Spanish'],
+        clinicIds: ['clinic-001'],
+        languages: ['English', 'Korean'],
         rating: 4.9,
-        serviceOptionIds: ['service-opt-003', 'service-opt-004'],
+        serviceOptionIds: ['service-opt-003'],
         telehealth: true,
+        name: 'Dr. Jennifer Lee',
+        specialty: 'Physiotherapy',
+        image: 'https://i.pravatar.cc/100?img=3',
+        nextAvailable: 'Monday, 10:00 AM',
+        experience: '6 years',
+        education: 'MScPT, University of Toronto',
     },
+    // Clinic-002 specialists
     {
         userId: 'user-004',
+        clinicIds: ['clinic-002'],
+        languages: ['English', 'French'],
+        rating: 4.6,
+        serviceOptionIds: ['service-opt-004'],
+        telehealth: true,
+        name: 'Dr. Robert Kim',
+        specialty: 'Psychology & Social Work',
+        image: 'https://i.pravatar.cc/100?img=4',
+        nextAvailable: 'Wednesday, 11:00 AM',
+        experience: '10 years',
+        education: 'PhD, University of Ottawa',
+    },
+    {
+        userId: 'user-005',
+        clinicIds: ['clinic-002'],
+        languages: ['English'],
+        rating: 4.8,
+        serviceOptionIds: ['service-opt-005'],
+        telehealth: false,
+        name: 'Dr. Emily Watson',
+        specialty: 'Acupuncture',
+        image: 'https://i.pravatar.cc/100?img=5',
+        nextAvailable: 'Friday, 3:00 PM',
+        experience: '7 years',
+        education: 'R.Ac, Canadian College of Acupuncture',
+    },
+    // Clinic-003 specialists
+    {
+        userId: 'user-006',
         clinicIds: ['clinic-003'],
         languages: ['English', 'French'],
-        rating: 4.7,
-        serviceOptionIds: ['service-opt-005', 'service-opt-006'],
+        rating: 4.5,
+        serviceOptionIds: ['service-opt-006'],
         telehealth: true,
+        name: 'Dr. David Wilson',
+        specialty: 'Dietician Services',
+        image: 'https://i.pravatar.cc/100?img=6',
+        nextAvailable: 'Thursday, 1:30 PM',
+        experience: '9 years',
+        education: 'RD, University of Guelph',
+    },
+    {
+        userId: 'user-007',
+        clinicIds: ['clinic-003'],
+        languages: ['English', 'Mandarin'],
+        rating: 4.7,
+        serviceOptionIds: ['service-opt-007'],
+        telehealth: false,
+        name: 'Dr. Lisa Chen',
+        specialty: 'Audiologist Services',
+        image: 'https://i.pravatar.cc/100?img=7',
+        nextAvailable: 'Next week, Tuesday',
+        experience: '11 years',
+        education: 'AuD, University of Western Ontario',
+    },
+    // Clinic-004 specialists
+    {
+        userId: 'user-008',
+        clinicIds: ['clinic-004'],
+        languages: ['English', 'Spanish'],
+        rating: 4.8,
+        serviceOptionIds: ['service-opt-008'],
+        telehealth: true,
+        name: 'Dr. Maria Garcia',
+        specialty: 'Occupational Therapy',
+        image: 'https://i.pravatar.cc/100?img=8',
+        nextAvailable: 'Today, 5:00 PM',
+        experience: '9 years',
+        education: 'MOT, University of Western Ontario',
+    },
+    {
+        userId: 'user-009',
+        clinicIds: ['clinic-004'],
+        languages: ['English'],
+        rating: 4.6,
+        serviceOptionIds: ['service-opt-009'],
+        telehealth: false,
+        name: 'Dr. James Thompson',
+        specialty: 'Osteopathy',
+        image: 'https://i.pravatar.cc/100?img=9',
+        nextAvailable: 'Tomorrow, 10:00 AM',
+        experience: '11 years',
+        education: 'DO, Canadian College of Osteopathy',
+    },
+    // Clinic-005 specialists
+    {
+        userId: 'user-010',
+        clinicIds: ['clinic-005'],
+        languages: ['English', 'French'],
+        rating: 4.4,
+        serviceOptionIds: ['service-opt-010'],
+        telehealth: false,
+        name: 'Dr. Patricia Brown',
+        specialty: 'Podiatry',
+        image: 'https://i.pravatar.cc/100?img=10',
+        nextAvailable: 'Wednesday, 2:00 PM',
+        experience: '16 years',
+        education: 'DPM, University of Toronto',
+    },
+    {
+        userId: 'user-011',
+        clinicIds: ['clinic-005'],
+        languages: ['English', 'Korean'],
+        rating: 4.9,
+        serviceOptionIds: ['service-opt-011'],
+        telehealth: true,
+        name: 'Dr. Kevin Lee',
+        specialty: 'Speech Therapy',
+        image: 'https://i.pravatar.cc/100?img=11',
+        nextAvailable: 'Friday, 11:00 AM',
+        experience: '7 years',
+        education: 'MSc SLP, University of Toronto',
+    },
+    {
+        userId: 'user-012',
+        clinicIds: ['clinic-005'],
+        languages: ['English'],
+        rating: 4.7,
+        serviceOptionIds: ['service-opt-012'],
+        telehealth: true,
+        name: 'Dr. Amanda Johnson',
+        specialty: 'Naturopathy',
+        image: 'https://i.pravatar.cc/100?img=12',
+        nextAvailable: 'Monday, 9:00 AM',
+        experience: '5 years',
+        education: 'ND, Canadian College of Naturopathic Medicine',
     },
 ];
+const generateMockAvailabilitySlots = () => {
+    const slots = [];
+    const specialists = generateMockSpecialists();
+    const serviceOptions = generateMockServiceOptions();
+    // Generate availability for the next 30 days
+    for (let i = 0; i < 30; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        // Skip weekends for most specialists
+        if (date.getDay() === 0 || date.getDay() === 6)
+            continue;
+        // Generate slots for each specialist
+        specialists.forEach(specialist => {
+            specialist.clinicIds.forEach(clinicId => {
+                // Get all service options for this clinic (not just specialist-specific ones)
+                const clinicServices = generateMockServices().filter(s => s.clinicId === clinicId);
+                const clinicServiceOptions = serviceOptions.filter(so => clinicServices.some(service => service.id === so.serviceId));
+                clinicServiceOptions.forEach(serviceOption => {
+                    // Generate time slots (9 AM to 5 PM, every 30 minutes)
+                    const timeSlots = [
+                        '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+                        '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+                        '15:00', '15:30', '16:00', '16:30'
+                    ];
+                    timeSlots.forEach(time => {
+                        // Randomly make some slots unavailable (20% chance)
+                        const isAvailable = Math.random() > 0.2;
+                        if (isAvailable) {
+                            const startTime = new Date(`${dateStr}T${time}:00`);
+                            const endTime = new Date(startTime.getTime() + serviceOption.duration * 60000);
+                            slots.push({
+                                id: `slot-${clinicId}-${specialist.userId}-${serviceOption.id}-${dateStr}-${time}`,
+                                clinicId,
+                                specialistId: specialist.userId,
+                                serviceOptionId: serviceOption.id,
+                                start: startTime.toISOString(),
+                                end: endTime.toISOString(),
+                                mode: 'in-person',
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    }
+    return slots;
+};
 export const useDirectoryStore = create()((set, get) => ({
     // State
     clinics: generateMockClinics(),
@@ -185,9 +446,15 @@ export const useDirectoryStore = create()((set, get) => ({
         'service-004': generateMockServiceOptions().filter(so => so.serviceId === 'service-004'),
         'service-005': generateMockServiceOptions().filter(so => so.serviceId === 'service-005'),
         'service-006': generateMockServiceOptions().filter(so => so.serviceId === 'service-006'),
+        'service-007': generateMockServiceOptions().filter(so => so.serviceId === 'service-007'),
+        'service-008': generateMockServiceOptions().filter(so => so.serviceId === 'service-008'),
+        'service-009': generateMockServiceOptions().filter(so => so.serviceId === 'service-009'),
+        'service-010': generateMockServiceOptions().filter(so => so.serviceId === 'service-010'),
+        'service-011': generateMockServiceOptions().filter(so => so.serviceId === 'service-011'),
+        'service-012': generateMockServiceOptions().filter(so => so.serviceId === 'service-012'),
     },
     specialists: generateMockSpecialists(),
-    availabilitySlots: [],
+    availabilitySlots: generateMockAvailabilitySlots(),
     isLoading: false,
     error: null,
     // Actions
@@ -231,6 +498,10 @@ export const useDirectoryStore = create()((set, get) => ({
         const { specialists } = get();
         return specialists.filter(specialist => specialist.clinicIds.includes(clinicId) &&
             specialist.serviceOptionIds.includes(serviceOptionId));
+    },
+    getSpecialistsByClinic: (clinicId) => {
+        const { specialists } = get();
+        return specialists.filter(specialist => specialist.clinicIds.includes(clinicId));
     },
     getAvailability: (params) => {
         const { availabilitySlots } = get();

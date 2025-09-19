@@ -11,6 +11,7 @@ interface DirectoryState {
 interface DirectoryActions {
     searchClinics: (params: ClinicSearchParams) => ClinicResult[];
     getSpecialistsForClinic: (clinicId: string, serviceOptionId: string) => SpecialistSummary[];
+    getSpecialistsByClinic: (clinicId: string) => SpecialistSummary[];
     getAvailability: (params: AvailabilityParams) => AvailabilitySlot[];
     clearError: () => void;
 }

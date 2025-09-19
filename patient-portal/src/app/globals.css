@@ -172,6 +172,15 @@
     @apply hidden sm:block;
   }
 
+  /* Remove focus outlines */
+  input:focus,
+  textarea:focus,
+  select:focus,
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   /* Safe area handling for mobile */
   .safe-top {
     padding-top: env(safe-area-inset-top);

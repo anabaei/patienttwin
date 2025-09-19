@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ClinicCardSkeleton, ClinicsSearchSkeleton } from "@/components/ui/skeletons";
+import { cn } from "@/lib/utils";
 import { useDirectoryStore } from "@twinn/store";
 import { motion, Variants } from "framer-motion";
 import {
@@ -16,94 +20,52 @@ import {
   Phone,
   Search,
   Shield,
-  Star
+  Star,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 export default function ClinicsPage() {
-  const { clinics, searchClinics } = useDirectoryStore();
+  const { clinics, servicesByClinic } = useDirectoryStore();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("distance");
+  const [maxDistance, setMaxDistance] = useState(50);
+  const [selectedInsurance, setSelectedInsurance] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Mock clinics data with images
-  const mockClinics = [
-    {
-      id: '1',
-      name: 'City Health Center',
-      address: '123 Main St, Toronto, ON',
-      distance: 1.2,
-      rating: 4.8,
-      phone: '(555) 123-4567',
-      image: 'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Primary Care', 'Urgent Care', 'Physical Therapy'],
-      hours: 'Mon-Fri: 8AM-6PM',
-      insuranceAccepted: ['Aetna', 'Blue Cross', 'Cigna'],
-    },
-    {
-      id: '2',
-      name: 'Family Wellness Clinic',
-      address: '456 Oak Ave, Ottawa, ON',
-      distance: 2.5,
-      rating: 4.5,
-      phone: '(555) 234-5678',
-      image: 'https://images.unsplash.com/photo-1642844613096-7b743b7d9915?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Family Medicine', 'Pediatrics', 'Mental Health'],
-      hours: 'Mon-Fri: 7AM-7PM',
-      insuranceAccepted: ['Aetna', 'UnitedHealthcare', 'Medicare'],
-    },
-    {
-      id: '3',
-      name: 'Community Medical Group',
-      address: '789 Pine Ln, Hamilton, ON',
-      distance: 3.1,
-      rating: 4.2,
-      phone: '(555) 345-6789',
-      image: 'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Internal Medicine', 'Cardiology', 'Dermatology'],
-      hours: 'Mon-Fri: 9AM-5PM',
-      insuranceAccepted: ['Blue Cross', 'Cigna', 'Aetna'],
-    },
-    {
-      id: '4',
-      name: 'Downtown Medical Center',
-      address: '321 Business Blvd, London, ON',
-      distance: 0.8,
-      rating: 4.7,
-      phone: '(555) 456-7890',
-      image: 'https://plus.unsplash.com/premium_photo-1753267731393-dd5785991e5c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Primary Care', 'Specialists', 'Lab Services'],
-      hours: 'Mon-Fri: 8AM-8PM, Sat: 9AM-3PM',
-      insuranceAccepted: ['Aetna', 'Blue Cross', 'UnitedHealthcare'],
-    },
-    {
-      id: '5',
-      name: 'Kitchener Health Hub',
-      address: '567 Queen St, Kitchener, ON',
-      distance: 4.2,
-      rating: 4.6,
-      phone: '(555) 567-8901',
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Urgent Care', 'Pediatrics', 'Mental Health'],
-      hours: 'Mon-Fri: 7AM-9PM, Sat-Sun: 8AM-6PM',
-      insuranceAccepted: ['Blue Cross', 'Cigna', 'Medicare'],
-    },
-    {
-      id: '6',
-      name: 'Windsor Medical Plaza',
-      address: '890 Riverside Dr, Windsor, ON',
-      distance: 5.8,
-      rating: 4.3,
-      phone: '(555) 678-9012',
-      image: 'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      services: ['Family Medicine', 'Cardiology', 'Physical Therapy'],
-      hours: 'Mon-Fri: 8AM-6PM',
-      insuranceAccepted: ['Aetna', 'UnitedHealthcare', 'Blue Cross'],
-    },
-  ];
+  // Transform store data to match UI requirements
+  const clinicsWithServices = clinics.map(clinic => {
+    const services = servicesByClinic[clinic.id] || [];
+    const serviceNames = services.map(service => service.name);
+    
+    // Mock additional data for UI
+    const mockImages = [
+      'https://images.unsplash.com/photo-1631507623112-0092cef9c70d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1642844613096-7b743b7d9915?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://plus.unsplash.com/premium_photo-1753267731393-dd5785991e5c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'https://images.unsplash.com/photo-1669930605340-801a0be1f5a3?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    ];
+    
+    return {
+      id: clinic.id,
+      name: clinic.name,
+      address: clinic.address,
+      distance: clinic.latitude && clinic.longitude ? 
+        Math.round((Math.random() * 5 + 0.5) * 10) / 10 : 0, // Mock distance
+      rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10, // Mock rating 3.5-5.0
+      phone: clinic.phone,
+      image: mockImages[Math.floor(Math.random() * mockImages.length)],
+      services: serviceNames,
+      hours: 'Mon-Fri: 8AM-6PM', // Mock hours
+      insuranceAccepted: ['Sun Life', 'Green Shield Canada', 'Manulife'], // Mock insurance
+    };
+  });
   
   // Simulate data loading
   useEffect(() => {
@@ -114,12 +76,19 @@ export default function ClinicsPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const filterOptions = [
-    { id: "all", label: "All Services" },
-    { id: "primary", label: "Primary Care" },
-    { id: "urgent", label: "Urgent Care" },
-    { id: "specialists", label: "Specialists" },
-    { id: "mental", label: "Mental Health" },
+  const serviceOptions: MultiSelectOption[] = [
+    { value: "massage", label: "Massage Therapy" },
+    { value: "chiropractic", label: "Chiropractic Care" },
+    { value: "physiotherapy", label: "Physiotherapy" },
+    { value: "psychology", label: "Psychology & Social Work" },
+    { value: "acupuncture", label: "Acupuncture" },
+    { value: "dietician", label: "Dietician Services" },
+    { value: "audiologist", label: "Audiologist Services" },
+    { value: "occupational", label: "Occupational Therapy" },
+    { value: "osteopathy", label: "Osteopathy" },
+    { value: "podiatry", label: "Podiatry" },
+    { value: "speech", label: "Speech Therapy" },
+    { value: "naturopathy", label: "Naturopathy" },
   ];
 
   const sortOptions = [
@@ -128,9 +97,24 @@ export default function ClinicsPage() {
     { id: "name", label: "Name" },
   ];
 
+  const insuranceOptions = [
+    { id: "all", label: "All Insurance" },
+    { id: "sun-life", label: "Sun Life" },
+    { id: "green-shield", label: "Green Shield Canada" },
+    { id: "manulife", label: "Manulife" },
+    { id: "blue-cross", label: "Blue Cross" },
+  ];
+
+  const distanceOptions = [
+    { id: 10, label: "Within 10 km" },
+    { id: 25, label: "Within 25 km" },
+    { id: 50, label: "Within 50 km" },
+    { id: 100, label: "Within 100 km" },
+  ];
+
   // Filter and sort clinics
   const filteredClinics = useMemo(() => {
-    const filtered = mockClinics.filter((clinic) => {
+    const filtered = clinicsWithServices.filter((clinic) => {
       const matchesSearch = searchQuery === "" || 
         clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         clinic.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -138,12 +122,21 @@ export default function ClinicsPage() {
           service.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-      const matchesFilter = selectedFilter === "all" || 
-        clinic.services?.some(service => 
-          service.toLowerCase().includes(selectedFilter)
+      const matchesServiceFilter = selectedServices.length === 0 || 
+        selectedServices.some(selectedService => 
+          clinic.services?.some(service => 
+            service.toLowerCase().includes(selectedService.toLowerCase())
+          )
         );
 
-      return matchesSearch && matchesFilter;
+      const matchesDistanceFilter = clinic.distance <= maxDistance;
+
+      const matchesInsuranceFilter = selectedInsurance === "all" || 
+        clinic.insuranceAccepted?.some(insurance => 
+          insurance.toLowerCase().includes(selectedInsurance.toLowerCase())
+        );
+
+      return matchesSearch && matchesServiceFilter && matchesDistanceFilter && matchesInsuranceFilter;
     });
 
     // Sort clinics
@@ -161,7 +154,7 @@ export default function ClinicsPage() {
     });
 
     return filtered;
-  }, [searchQuery, selectedFilter, sortBy]);
+  }, [clinicsWithServices, searchQuery, selectedServices, maxDistance, selectedInsurance, sortBy]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -224,75 +217,254 @@ export default function ClinicsPage() {
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
         <motion.div className="mb-6" variants={itemVariants}>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Find Clinics</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Find Paramedical Clinics</h1>
           <p className="text-muted-foreground">
-            Discover healthcare providers near you in Ontario
+            Discover paramedical service providers near you in Ontario
           </p>
         </motion.div>
 
-        {/* Search Bar */}
-        <motion.div className="relative mb-6" variants={itemVariants}>
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-          <Input
-            type="text"
-            placeholder="Search clinics, services, or locations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 h-12 text-base border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
-          />
-        </motion.div>
-
-        {/* Filters and Sort */}
+        {/* Search Bar and Filter Button */}
         <motion.div className="mb-6" variants={itemVariants}>
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-2 flex-1">
-              {filterOptions.map((option) => (
-                <motion.div
-                  key={option.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+          <div className="flex gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+              <Input
+                type="text"
+                placeholder="Search paramedical clinics, services, or locations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-12 text-base border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            
+            {/* Filter Button */}
+            <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+              <SheetTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className={`h-12 w-12 shrink-0 relative ${
+                    (selectedServices.length > 0 || maxDistance !== 50 || selectedInsurance !== "all") 
+                      ? "border-primary bg-primary/5" 
+                      : ""
+                  }`}
                 >
-                  <Button
-                    variant={selectedFilter === option.id ? "default" : "outline"}
-                    onClick={() => setSelectedFilter(option.id)}
-                    size="sm"
-                    className="rounded-lg"
-                  >
-                    {option.label}
-                  </Button>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  <Filter className="h-5 w-5" />
+                  {(selectedServices.length > 0 || maxDistance !== 50 || selectedInsurance !== "all") && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {(selectedServices.length > 0 ? 1 : 0) + (maxDistance !== 50 ? 1 : 0) + (selectedInsurance !== "all" ? 1 : 0)}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="bottom" 
+                className={cn(
+                  "h-[88vh] max-h-[calc(100vh-4rem)] w-full gap-0 rounded-t-3xl border-t border-border p-0"
+                )}
               >
-                {sortOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    Sort by {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="flex h-full flex-col">
+                  <SheetHeader className="border-b border-border px-6 pb-4 pt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Filter className="h-6 w-6" />
+                      </div>
+                      <div className="flex flex-col">
+                        <SheetTitle className="text-base font-semibold">Filter Clinics</SheetTitle>
+                        <SheetDescription className="text-xs text-muted-foreground">
+                          Refine your search by service type, distance, and insurance
+                        </SheetDescription>
+                      </div>
+                    </div>
+                  </SheetHeader>
+                  
+                  <div className="flex-1 overflow-hidden">
+                    <div className="h-full overflow-y-auto px-6 py-5 space-y-6">
+                      {/* Service Type Multi-Select */}
+                      <div className="space-y-3">
+                        <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Service Type
+                        </h3>
+                        <MultiSelect
+                          options={serviceOptions}
+                          selected={selectedServices}
+                          onChange={setSelectedServices}
+                          placeholder="Select services..."
+                          className="w-full"
+                        />
+                      </div>
+
+                      {/* Distance and Insurance Filters */}
+                      <div className="grid grid-cols-1 gap-6">
+                        {/* Distance Filter */}
+                        <div className="space-y-3">
+                          <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+                            <MapPin className="h-4 w-4" />
+                            Distance
+                          </h3>
+                          <Select value={maxDistance.toString()} onValueChange={(value) => setMaxDistance(Number(value))}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select distance" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {distanceOptions.map((option) => (
+                                <SelectItem key={option.id} value={option.id.toString()}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Insurance Filter */}
+                        <div className="space-y-3">
+                          <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+                            <Shield className="h-4 w-4" />
+                            Insurance Accepted
+                          </h3>
+                          <Select value={selectedInsurance} onValueChange={setSelectedInsurance}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select insurance" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {insuranceOptions.map((option) => (
+                                <SelectItem key={option.id} value={option.id}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Sort Options */}
+                      <div className="space-y-3">
+                        <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <Filter className="h-4 w-4" />
+                          Sort by
+                        </h3>
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {sortOptions.map((option) => (
+                              <SelectItem key={option.id} value={option.id}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                    </div>
+                  </div>
+                  
+                  {/* Fixed Footer */}
+                  <div className="border-t bg-background px-6 py-4">
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedServices([]);
+                          setMaxDistance(50);
+                          setSelectedInsurance("all");
+                          setSortBy("distance");
+                        }}
+                        className="flex-1"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Clear All Filters
+                      </Button>
+                      <Button
+                        onClick={() => setIsFilterOpen(false)}
+                        className="flex-1"
+                      >
+                        Apply Filters
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </motion.div>
 
+
+
         {/* Results Header */}
         <motion.div className="mb-6" variants={itemVariants}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-foreground">
-              {filteredClinics.length} Clinics Found
-            </h2>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Navigation className="h-4 w-4" />
-              <span>Sorted by {sortOptions.find(opt => opt.id === sortBy)?.label}</span>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
+                {filteredClinics.length} Clinics Found
+              </h2>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Navigation className="h-4 w-4" />
+                <span>Sorted by {sortOptions.find(opt => opt.id === sortBy)?.label}</span>
+              </div>
             </div>
+            
+            {/* Active Filters Summary */}
+            {(selectedServices.length > 0 || maxDistance !== 50 || selectedInsurance !== "all") && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Filters applied:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {maxDistance !== 50 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {maxDistance}km
+                      </Badge>
+                    )}
+                    {selectedInsurance !== "all" && (
+                      <Badge variant="secondary" className="text-xs">
+                        {insuranceOptions.find(opt => opt.id === selectedInsurance)?.label}
+                      </Badge>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedServices([]);
+                      setMaxDistance(50);
+                      setSelectedInsurance("all");
+                      setSortBy("distance");
+                    }}
+                    className="text-xs h-6 px-2"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Clear All
+                  </Button>
+                </div>
+                
+                {/* Selected Services Chips */}
+                {selectedServices.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {selectedServices.map((service) => {
+                      const serviceOption = serviceOptions.find(opt => opt.value === service);
+                      return (
+                        <Badge
+                          key={service}
+                          variant="outline"
+                          className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                          onClick={() => {
+                            setSelectedServices(prev => prev.filter(s => s !== service));
+                          }}
+                        >
+                          {serviceOption?.label}
+                          <X className="h-3 w-3 ml-1" />
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </motion.div>
 
@@ -468,7 +640,10 @@ export default function ClinicsPage() {
               variant="outline" 
               onClick={() => {
                 setSearchQuery("");
-                setSelectedFilter("all");
+                setSelectedServices([]);
+                setMaxDistance(50);
+                setSelectedInsurance("all");
+                setSortBy("distance");
               }}
             >
               Clear Filters

@@ -33,22 +33,7 @@ export const INSURANCE_LOGOS: Record<string, LogoSource> = {
   desjardins: {
     primary: 'https://www.desjardins.com/etc/designs/desjardins/style/images/desjardins-logo.svg',
     clearbit: 'https://logo.clearbit.com/desjardins.com',
-    fallback: '/logos/desjardins-fallback.svg'
-  },
-  greatwest: {
-    primary: 'https://www.greatwestlife.com/content/dam/gwl/about-us/media-centre/logos/GWL_Lockup_RGB.png',
-    clearbit: 'https://logo.clearbit.com/greatwestlife.com',
-    fallback: '/logos/greatwest-fallback.svg'
-  },
-  bluecross: {
-    primary: 'https://www.medavie.bluecross.ca/-/media/medaviebc/images/logo/medavie-blue-cross-logo.png',
-    clearbit: 'https://logo.clearbit.com/medavie.bluecross.ca',
-    fallback: '/logos/bluecross-fallback.svg'
-  },
-  chambers: {
-    primary: 'https://www.chamberplan.ca/wp-content/uploads/2020/10/chambers-logo.png',
-    clearbit: 'https://logo.clearbit.com/chamberplan.ca',
-    fallback: '/logos/chambers-fallback.svg'
+    fallback: '/desjardins.png'
   }
 };
 

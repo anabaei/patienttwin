@@ -1,6 +1,7 @@
 "use client";
 
 import { RequireAuth } from "@/components/auth/require-auth";
+import { ChatProvider } from "@/components/chat/chat-provider";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,8 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <RequireAuth>
-      <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <ChatProvider>
+        <div className="h-screen bg-background flex flex-col overflow-hidden">
         {/* Desktop/Tablet Layout */}
         <div className="hidden md:flex h-full">
           {/* Sidebar */}
@@ -81,7 +83,8 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Bottom Navigation - Fixed positioned */}
           <BottomNavigation />
         </div>
-      </div>
+        </div>
+      </ChatProvider>
     </RequireAuth>
   );
 }

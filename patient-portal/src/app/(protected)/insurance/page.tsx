@@ -7,7 +7,6 @@ import { InsuranceLogo } from "@/components/ui/insurance-logo";
 import { InsurancePageSkeleton } from "@/components/ui/skeletons";
 import { useInsuranceStore } from "@twinn/store";
 import { Check, Plus, Shield, Star } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -79,20 +78,20 @@ function InsuranceContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen bg-background p-4 pb-24">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center space-x-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80">
               <Shield className="h-6 w-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold">Insurance Coverage</h1>
-              <p className="text-muted-foreground">Manage your insurance providers and coverage</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold">Insurance Coverage</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">Manage your insurance providers and coverage</p>
             </div>
           </div>
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/insurance/add">
               <Plus className="mr-2 h-4 w-4" />
               Add Insurance
@@ -170,34 +169,6 @@ function InsuranceContent() {
           </div>
         )}
         
-        {/* Quick Add Section */}
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Popular Insurance Providers</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {providers.slice(0, 6).map((provider) => (
-                <Card 
-                  key={provider.id}
-                  className="cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 group"
-                >
-                  <CardContent className="p-4 text-center">
-                    <div className="mx-auto mb-2">
-                      <InsuranceLogo
-                        providerId={provider.id}
-                        providerName={provider.name}
-                        size={64}
-                        className="mx-auto"
-                      />
-                    </div>
-                    <p className="text-xs font-medium text-center leading-tight group-hover:text-primary">
-                      {provider.name}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
         
         {/* Help Section */}
         <Card>
