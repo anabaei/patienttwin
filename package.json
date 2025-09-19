@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --filter patient-portal dev",
-    "build": "pnpm --filter patient-portal build",
+    "build": "pnpm --filter @twinn/store build && pnpm --filter patient-portal build",
     "storybook": "pnpm --filter patient-portal storybook",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
