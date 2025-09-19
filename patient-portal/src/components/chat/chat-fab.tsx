@@ -12,7 +12,6 @@ export function ChatFab() {
   const isOpen = useChatStore((state: { isOpen: boolean }) => state.isOpen);
   const toggle = useChatStore((state: { toggle: () => void }) => state.toggle);
   const chatSupport = useSettingsStore((state: { chatSupport: boolean }) => state.chatSupport);
-
   const isVisible = !isOpen && chatSupport;
 
   const animateProps = { 

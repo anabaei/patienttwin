@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
 interface SettingsState {
   chatSupport: boolean;
   notifications: {
