@@ -1,17 +1,17 @@
 "use client";
 
 import { useSettingsStore } from "@twinn/store";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, Transition, useReducedMotion } from "framer-motion";
 import { BrainCog } from "lucide-react";
 
-import { useChatStore } from "@/hooks/use-chat-store";
 import { cn } from "@/lib/utils";
+import { useChatStore } from "@twinn/store";
 
 export function ChatFab() {
   const isReducedMotion = useReducedMotion();
-  const isOpen = useChatStore((state) => state.isOpen);
-  const toggle = useChatStore((state) => state.toggle);
-  const chatSupport = useSettingsStore((state) => state.chatSupport);
+  const isOpen = useChatStore((state: { isOpen: boolean }) => state.isOpen);
+  const toggle = useChatStore((state: { toggle: () => void }) => state.toggle);
+  const chatSupport = useSettingsStore((state: { chatSupport: boolean }) => state.chatSupport);
 
   const isVisible = !isOpen && chatSupport;
 
@@ -37,7 +37,7 @@ export function ChatFab() {
       style={{ pointerEvents: isVisible ? "auto" : "none" }}
       initial={{ opacity: 0, scale: 0.85 }}
       animate={animateProps}
-      transition={animationTransition}
+      transition={animationTransition as Transition}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
     >

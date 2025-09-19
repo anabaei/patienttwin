@@ -8,6 +8,8 @@ export * from './types';
 export { useAppointmentsStore } from './stores/appointments';
 export { useAuthStore } from './stores/auth';
 export { useAvailabilityStore } from './stores/availability';
+export { useChatStore } from './stores/chat';
+export type { ChatMessage, ChatRole } from './stores/chat';
 export { useDirectoryStore } from './stores/directory';
 export { useHealthcareBalancesStore } from './stores/healthcare-balances';
 export { useInsuranceStore } from './stores/insurance';

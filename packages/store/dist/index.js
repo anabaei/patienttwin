@@ -9,6 +9,7 @@ export { useHealthcareBalancesStore } from './stores/healthcare-balances';
 export { useInsuranceStore } from './stores/insurance';
 export { useNavigationStore } from './stores/navigation';
 export { useSettingsStore } from './stores/settings';
+export { useChatStore } from './stores/chat';
 // Utilities
 export * from './utils/availability';
 export * from './utils/geo';

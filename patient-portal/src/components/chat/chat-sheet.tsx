@@ -1,19 +1,19 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { BrainCog, Loader2, RotateCcw, Send } from "lucide-react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import { useChatStore, type ChatMessage } from "@/hooks/use-chat-store";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { useChatStore, type ChatMessage } from "@twinn/store";
 
 const formatPathLabel = (path: string) => {
   if (!path || path === "/") {

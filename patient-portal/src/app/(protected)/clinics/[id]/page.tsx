@@ -19,6 +19,7 @@ import {
   Stethoscope,
   Users
 } from 'lucide-react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -146,10 +147,11 @@ export default function ClinicDetailsPage() {
           <div className="relative h-48 sm:h-64">
             {clinic.avatarUrl ? (
               <>
-                <img
+                <Image
                   src={clinic.avatarUrl}
                   alt={clinic.name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
               </>
@@ -258,9 +260,9 @@ export default function ClinicDetailsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {specialists.map((specialist: any) => (
+              {specialists.map((specialist) => (
                 <motion.div
-                  key={specialist.id}
+                  key={specialist.userId}
                   className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}

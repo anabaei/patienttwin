@@ -3,17 +3,18 @@
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 import { cn } from "@/lib/utils";
 import {
-    IconArrowNarrowLeft,
-    IconArrowNarrowRight,
-    IconX,
+  IconArrowNarrowLeft,
+  IconArrowNarrowRight,
+  IconX,
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 
 export interface CarouselProps {
@@ -163,7 +164,10 @@ export const Card = ({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { onCardClose } = useContext(CarouselContext);
-
+  const handleClose = () => {
+    setOpen(false);
+    onCardClose(index);
+  };
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -177,7 +181,7 @@ export const Card = ({
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [open, handleClose]);
 
   useOnClickOutside(containerRef as React.RefObject<HTMLElement>, () => handleClose());
 
@@ -185,10 +189,7 @@ export const Card = ({
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
+ 
 
   return (
     <>
@@ -284,7 +285,7 @@ export const BlurImage = ({
   const [isLoading, setLoading] = useState(true);
 
   return (
-    <img
+    <Image
       className={cn(
         "h-full w-full transition duration-300",
         isLoading ? "blur-sm" : "blur-0",
@@ -294,8 +295,6 @@ export const BlurImage = ({
       src={src}
       width={width}
       height={height}
-      loading="lazy"
-      decoding="async"
       alt={alt ? alt : "Background of a beautiful view"}
       {...rest}
     />

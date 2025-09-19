@@ -334,6 +334,11 @@ const HealthcareCard = ({
     const gradient = getBackgroundGradient(balance.type);
     const illustration = getVectorIllustration(balance.type);
 
+    const handleClose = () => {
+        setOpen(false);
+        onCardClose(index);
+    };
+
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
             if (event.key === "Escape") {
@@ -347,17 +352,12 @@ const HealthcareCard = ({
         }
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [open]);
+    }, [open, handleClose]);
 
     useOnClickOutside(containerRef as React.RefObject<HTMLElement>, () => handleClose());
 
     const handleOpen = () => {
         setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        onCardClose(index);
     };
 
     return (

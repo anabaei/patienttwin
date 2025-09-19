@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
-import { useChatStore } from "@/hooks/use-chat-store";
+import { useChatStore } from "@twinn/store";
 
 import { ChatFab } from "./chat-fab";
 import { ChatSheet } from "./chat-sheet";
