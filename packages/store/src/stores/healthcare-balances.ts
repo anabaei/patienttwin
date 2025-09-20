@@ -104,7 +104,7 @@ const mockHealthcareBalances: HealthcareBalance[] = [
   {
     id: '3',
     type: 'psychologist',
-    name: 'Psychologist',
+    name: 'Mental Health',
     amount: 300.00,
     expiryDate: '2025-03-31',
     renewalDate: '2025-04-01',
