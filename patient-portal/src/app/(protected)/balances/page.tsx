@@ -10,21 +10,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { motion } from "framer-motion";
 import {
-  ArrowDown,
-  ArrowUp,
-  Calendar,
-  CheckCircle,
-  Clock,
-  CreditCard,
-  DollarSign,
-  Download,
-  FileText,
-  Filter,
-  Heart,
-  Search,
-  TrendingUp,
-  Wallet,
-  XCircle
+    ArrowDown,
+    ArrowUp,
+    Calendar,
+    CheckCircle,
+    Clock,
+    CreditCard,
+    DollarSign,
+    Download,
+    FileText,
+    Filter,
+    Heart,
+    Search,
+    TrendingUp,
+    Wallet,
+    XCircle
 } from "lucide-react";
 import { useState } from "react";
 
@@ -381,18 +381,19 @@ export default function BalancesPage() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="space-y-4">
-      {/* Compact Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold">Account Balances</h1>
-          <p className="text-sm text-muted-foreground">Healthcare savings and transaction history</p>
+    <div className="bg-gradient-to-br from-background to-muted/30 py-8 px-4">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Compact Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-semibold">Account Balances</h1>
+            <p className="text-sm text-muted-foreground">Healthcare savings and transaction history</p>
+          </div>
+          <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <Download className="h-3 w-3" />
+            Export
+          </Button>
         </div>
-        <Button size="sm" variant="outline" className="flex items-center gap-2">
-          <Download className="h-3 w-3" />
-          Export
-        </Button>
-      </div>
 
       {/* Compact Account Balances Summary */}
       <CompactBalanceSummary 
@@ -583,6 +584,7 @@ export default function BalancesPage() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
