@@ -59,65 +59,10 @@ const getStatusBadge = (status: HealthcareBalance['status']) => {
   }
 };
 
-const getBackgroundGradient = (type: HealthcareBalance['type']) => {
-  const gradients = {
-    'massage-therapist': 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%)',
-    'chiropractor': 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)',
-    'psychologist': 'linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 50%, #c4b5fd 100%)',
-    'physiotherapist': 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%)',
-    'acupuncturist': 'linear-gradient(135deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%)',
-    'dietician': 'linear-gradient(135deg, #ccfbf1 0%, #99f6e4 50%, #5eead4 100%)',
-    'audiologist': 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)',
-    'occupational-therapist': 'linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 50%, #c4b5fd 100%)',
-    'osteopath': 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 50%, #ddd6fe 100%)',
-    'podiatrist': 'linear-gradient(135deg, #ccfbf1 0%, #99f6e4 50%, #5eead4 100%)',
-    'speech-therapist': 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%)',
-    'naturopath': 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%)',
-    'other': 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%)'
-  };
-  return gradients[type];
-};
-
-const getLightThemeGradient = (type: HealthcareBalance['type']) => {
-  const lightGradients = {
-    'massage-therapist': 'linear-gradient(135deg, #fef7f7 0%, #fdf2f8 50%, #fce7f3 100%)',
-    'chiropractor': 'linear-gradient(135deg, #f8fafc 0%, #f0f9ff 50%, #e0f2fe 100%)',
-    'psychologist': 'linear-gradient(135deg, #fafaf9 0%, #faf5ff 50%, #f3e8ff 100%)',
-    'physiotherapist': 'linear-gradient(135deg, #f7fef7 0%, #f0fdf4 50%, #dcfce7 100%)',
-    'acupuncturist': 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%)',
-    'dietician': 'linear-gradient(135deg, #f7fef7 0%, #f0fdf4 50%, #dcfce7 100%)',
-    'audiologist': 'linear-gradient(135deg, #f8fafc 0%, #f0f9ff 50%, #e0f2fe 100%)',
-    'occupational-therapist': 'linear-gradient(135deg, #fafaf9 0%, #faf5ff 50%, #f3e8ff 100%)',
-    'osteopath': 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%)',
-    'podiatrist': 'linear-gradient(135deg, #f7fef7 0%, #f0fdf4 50%, #dcfce7 100%)',
-    'speech-therapist': 'linear-gradient(135deg, #fef7f7 0%, #fdf2f8 50%, #fce7f3 100%)',
-    'naturopath': 'linear-gradient(135deg, #f7fef7 0%, #f0fdf4 50%, #dcfce7 100%)',
-    'other': 'linear-gradient(135deg, #fafafa 0%, #f8fafc 50%, #f1f5f9 100%)'
-  };
-  return lightGradients[type];
-};
-
-const getTextColor = (type: HealthcareBalance['type']) => {
-  const textColors = {
-    'massage-therapist': 'text-pink-900 dark:text-pink-100',
-    'chiropractor': 'text-blue-900 dark:text-blue-100', 
-    'psychologist': 'text-purple-900 dark:text-purple-100',
-    'physiotherapist': 'text-green-900 dark:text-green-100',
-    'acupuncturist': 'text-amber-900 dark:text-amber-100',
-    'dietician': 'text-teal-900 dark:text-teal-100',
-    'audiologist': 'text-blue-900 dark:text-blue-100',
-    'occupational-therapist': 'text-purple-900 dark:text-purple-100',
-    'osteopath': 'text-indigo-900 dark:text-indigo-100',
-    'podiatrist': 'text-teal-900 dark:text-teal-100',
-    'speech-therapist': 'text-pink-900 dark:text-pink-100',
-    'naturopath': 'text-green-900 dark:text-green-100',
-    'other': 'text-gray-900 dark:text-gray-100'
-  };
-  return textColors[type];
-};
 
 export function DashboardHealthcareCarousel() {
   const { balances } = useHealthcareBalancesStore();
+  
   
   // Filter to show only the main services for dashboard (massage-therapist, chiropractor, psychologist, other)
   const dashboardBalances = balances.filter(balance => 
@@ -141,19 +86,14 @@ export function DashboardHealthcareCarousel() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="relative h-28 w-full rounded-xl overflow-hidden cursor-pointer group"
-                  style={{
-                    background: getBackgroundGradient(balance.type)
-                  }}
+                  className={`relative h-28 w-full rounded-xl overflow-hidden cursor-pointer group ${
+                    balance.type === 'massage-therapist' ? 'bg-gradient-to-br from-pink-50 to-pink-100 dark:from-purple-900 dark:to-pink-900' :
+                    balance.type === 'chiropractor' ? 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800' :
+                    balance.type === 'psychologist' ? 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800' :
+                    balance.type === 'other' ? 'bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900 dark:to-emerald-800' :
+                    'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700'
+                  }`}
                 >
-                  {/* Light theme-aware background overlay */}
-                  <div 
-                    className="absolute inset-0 rounded-xl"
-                    style={{
-                      background: getLightThemeGradient(balance.type)
-                    }}
-                  ></div>
-                  
                   {/* Status Badge - Positioned at top-right edge */}
                   <div className="absolute top-2 right-2 z-20">
                     {getStatusBadge(balance.status)}
@@ -163,8 +103,14 @@ export function DashboardHealthcareCarousel() {
                   <div className="relative z-10 p-3 flex flex-col justify-between h-full">
                     {/* Top section - Icon */}
                     <div className="flex items-start justify-start">
-                      <div className="p-1.5 sm:p-2 rounded-lg bg-white/60 backdrop-blur-sm border border-white/30 shadow-sm">
-                        <div className={balance.color}>
+                      <div className="p-1.5 sm:p-2 rounded-lg backdrop-blur-sm border shadow-sm bg-white/60 dark:bg-white/20 border-white/30 dark:border-white/20">
+                        <div className={`${
+                          balance.type === 'massage-therapist' ? 'text-pink-900 dark:text-pink-100' :
+                          balance.type === 'chiropractor' ? 'text-blue-900 dark:text-blue-100' :
+                          balance.type === 'psychologist' ? 'text-purple-900 dark:text-purple-100' :
+                          balance.type === 'other' ? 'text-emerald-900 dark:text-emerald-100' :
+                          'text-gray-900 dark:text-gray-100'
+                        }`}>
                           {getIconComponent(balance.iconName)}
                         </div>
                       </div>
@@ -172,20 +118,42 @@ export function DashboardHealthcareCarousel() {
                     
                     {/* Middle section - Title */}
                     <div>
-                      <p className="text-sm font-semibold leading-tight text-black">{balance.name}</p>
+                      <p className={`text-sm font-semibold leading-tight ${
+                        balance.type === 'massage-therapist' ? 'text-pink-900 dark:text-pink-100' :
+                        balance.type === 'chiropractor' ? 'text-blue-900 dark:text-blue-100' :
+                        balance.type === 'psychologist' ? 'text-purple-900 dark:text-purple-100' :
+                        balance.type === 'other' ? 'text-emerald-900 dark:text-emerald-100' :
+                        'text-gray-900 dark:text-gray-100'
+                      }`}>
+                        {balance.name}
+                      </p>
                     </div>
                     
                     {/* Bottom section - Balance */}
                     <div>
                       <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-black" />
-                        <p className="text-lg font-bold text-black">{balance.amount.toFixed(0)}</p>
+                        <DollarSign className={`h-4 w-4 ${
+                          balance.type === 'massage-therapist' ? 'text-pink-900 dark:text-pink-100' :
+                          balance.type === 'chiropractor' ? 'text-blue-900 dark:text-blue-100' :
+                          balance.type === 'psychologist' ? 'text-purple-900 dark:text-purple-100' :
+                          balance.type === 'other' ? 'text-emerald-900 dark:text-emerald-100' :
+                          'text-gray-900 dark:text-gray-100'
+                        }`} />
+                        <p className={`text-lg font-bold ${
+                          balance.type === 'massage-therapist' ? 'text-pink-900 dark:text-pink-100' :
+                          balance.type === 'chiropractor' ? 'text-blue-900 dark:text-blue-100' :
+                          balance.type === 'psychologist' ? 'text-purple-900 dark:text-purple-100' :
+                          balance.type === 'other' ? 'text-emerald-900 dark:text-emerald-100' :
+                          'text-gray-900 dark:text-gray-100'
+                        }`}>
+                          {balance.amount.toFixed(0)}
+                        </p>
                       </div>
                     </div>
                   </div>
                   
                   {/* Hover effect */}
-                  <div className="absolute inset-0 bg-white/20 dark:bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20" />
+                  <div className="absolute inset-0 bg-white/20 dark:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20" />
                 </motion.div>
               </BalanceDetailsModal>
             </CarouselItem>

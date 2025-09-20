@@ -410,6 +410,37 @@ const mockHealthcareBalances: HealthcareBalance[] = [
       maxPerYear: 300,
       copay: 10
     }
+  },
+  {
+    id: '13',
+    type: 'other',
+    name: 'Other Services',
+    amount: 300.00,
+    expiryDate: '2024-12-31',
+    renewalDate: '2025-01-01',
+    description: 'Additional paramedical services not covered by specific categories',
+    iconName: 'Grid3X3',
+    color: 'text-emerald-500',
+    status: 'active',
+    usageHistory: [
+      {
+        date: '2024-01-20',
+        service: 'General Consultation',
+        amount: -75.00,
+        provider: 'Wellness Center'
+      }
+    ],
+    benefits: [
+      'Flexible coverage',
+      'Various services',
+      'General wellness',
+      'Additional support'
+    ],
+    coverage: {
+      maxPerSession: 75,
+      maxPerYear: 300,
+      copay: 15
+    }
   }
 ];
 
