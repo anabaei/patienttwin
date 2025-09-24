@@ -2,25 +2,25 @@
 
 import { Badge } from "@/components/ui/badge";
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import type { ToolUIPart } from "ai";
 import {
-    Calendar,
-    CheckCircleIcon,
-    ChevronDownIcon,
-    CircleIcon,
-    ClockIcon,
-    CreditCard,
-    Heart,
-    MapPin,
-    Stethoscope,
-    User,
-    WrenchIcon,
-    XCircleIcon,
+  Calendar,
+  CheckCircleIcon,
+  ChevronDownIcon,
+  CircleIcon,
+  ClockIcon,
+  CreditCard,
+  Heart,
+  MapPin,
+  Stethoscope,
+  User,
+  WrenchIcon,
+  XCircleIcon,
 } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
@@ -71,6 +71,20 @@ export const ToolHeader = ({
   state,
   ...props
 }: ToolHeaderProps) => {
+  // Convert technical tool type to user-friendly name
+  const getToolDisplayName = (toolType: string) => {
+    const toolNames: Record<string, string> = {
+      "tool-getBalances": "Healthcare Benefits",
+      "tool-getClinics": "Clinic Locations", 
+      "tool-getServices": "Available Services",
+      "tool-getSpecialists": "Specialists",
+      "tool-getAvailability": "Appointment Times",
+      "tool-bookAppointment": "Booking Appointment",
+      "tool-getCurrentPath": "Current Page"
+    };
+    return toolNames[toolType] || toolType;
+  };
+
   // Get contextual icon based on tool type
   const getToolIcon = (toolType: string) => {
     const iconMap: Record<string, ReactNode> = {
@@ -85,6 +99,8 @@ export const ToolHeader = ({
     return iconMap[toolType] || <WrenchIcon className="size-4" />;
   };
 
+  const displayName = getToolDisplayName(type);
+
   return (
     <CollapsibleTrigger
       className={cn(
@@ -95,9 +111,9 @@ export const ToolHeader = ({
     >
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <div className="shrink-0 text-muted-foreground">
-          {getToolIcon(type)}
+          {getToolIcon(displayName)}
         </div>
-        <span className="truncate font-medium text-sm">{type}</span>
+        <span className="truncate font-medium text-sm">{displayName}</span>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {getStatusBadge(state)}

@@ -105,7 +105,12 @@ const PureMessage = ({
 
             if (type?.startsWith("tool-")) {
               const toolName = type.replace("tool-", "");
-              const toolPart = part as any;
+              const toolPart = part as {
+                state?: string;
+                input?: unknown;
+                output?: unknown;
+                errorText?: string;
+              };
 
               // Convert technical tool names to user-friendly names
               const getToolDisplayName = (name: string) => {
@@ -124,14 +129,14 @@ const PureMessage = ({
               return (
                 <Tool key={key} defaultOpen={true}>
                   <ToolHeader
-                    type={getToolDisplayName(toolName)}
-                    state={toolPart.state || "output-available"}
+                    type={`tool-${toolName}` as const}
+                    state={(toolPart.state as "input-streaming" | "input-available" | "output-available" | "output-error") || "output-available"}
                   />
                   <ToolContent>
-                    {/* Hide parameters for better UX - only show if there's an error */}
-                    {toolPart.errorText && toolPart.input && (
-                      <ToolInput input={toolPart.input} />
-                    )}
+                    {toolPart.errorText && toolPart.input ? (
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      <ToolInput input={toolPart.input as any} />
+                    ) : null}
                     <ToolOutput
                       output={
                         toolPart.output ? (
@@ -165,17 +170,17 @@ const PureMessage = ({
 };
 
 // Component to render tool results in a user-friendly way
-function ToolResultRenderer({ toolName, output }: { toolName: string; output: any }) {
+function ToolResultRenderer({ toolName, output }: { toolName: string; output: unknown }) {
   switch (toolName) {
     case "getBalances":
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
-            Healthcare Balances ({output.totalCount || 0})
+            Healthcare Balances ({(output as { totalCount?: number }).totalCount || 0})
           </div>
           <div className="grid gap-2">
-            {output.balances?.length > 0 ? (
-              output.balances.slice(0, 5).map((balance: any) => (
+            {(output as { balances?: Array<{ id: string; name: string; amount: number; description: string }> }).balances && (output as { balances: Array<{ id: string; name: string; amount: number; description: string }> }).balances.length > 0 ? (
+              (output as { balances: Array<{ id: string; name: string; amount: number; description: string }> }).balances.slice(0, 5).map((balance) => (
                 <div key={balance.id} className="rounded-lg border p-3 bg-background">
                   <div className="font-medium">{balance.name}</div>
                   <div className="text-sm text-muted-foreground">
@@ -197,11 +202,11 @@ function ToolResultRenderer({ toolName, output }: { toolName: string; output: an
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
-            Clinics ({output.totalCount || 0})
+            Clinics ({(output as { totalCount?: number }).totalCount || 0})
           </div>
           <div className="grid gap-2">
-            {output.clinics?.length > 0 ? (
-              output.clinics.slice(0, 5).map((clinic: any) => (
+            {(output as { clinics?: Array<{ id: string; name: string; address: string; specialties?: string[] }> }).clinics && (output as { clinics: Array<{ id: string; name: string; address: string; specialties?: string[] }> }).clinics.length > 0 ? (
+              (output as { clinics: Array<{ id: string; name: string; address: string; specialties?: string[] }> }).clinics.slice(0, 5).map((clinic) => (
                 <div key={clinic.id} className="rounded-lg border p-3 bg-background">
                   <div className="font-medium">{clinic.name}</div>
                   <div className="text-sm text-muted-foreground">
@@ -223,11 +228,11 @@ function ToolResultRenderer({ toolName, output }: { toolName: string; output: an
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
-            Services ({output.totalCount || 0})
+            Services ({(output as { totalCount?: number }).totalCount || 0})
           </div>
           <div className="grid gap-2">
-            {output.services?.length > 0 ? (
-              output.services.slice(0, 5).map((service: any) => (
+            {(output as { services?: Array<{ id: string; name: string; category: string; description: string }> }).services && (output as { services: Array<{ id: string; name: string; category: string; description: string }> }).services.length > 0 ? (
+              (output as { services: Array<{ id: string; name: string; category: string; description: string }> }).services.slice(0, 5).map((service) => (
                 <div key={service.id} className="rounded-lg border p-3 bg-background">
                   <div className="font-medium">{service.name}</div>
                   <div className="text-sm text-muted-foreground">
@@ -249,11 +254,11 @@ function ToolResultRenderer({ toolName, output }: { toolName: string; output: an
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
-            Specialists ({output.totalCount || 0})
+            Specialists ({(output as { totalCount?: number }).totalCount || 0})
           </div>
           <div className="grid gap-2">
-            {output.specialists?.length > 0 ? (
-              output.specialists.slice(0, 5).map((specialist: any) => (
+            {(output as { specialists?: Array<{ id: string; name: string; specialty: string; clinic: string }> }).specialists && (output as { specialists: Array<{ id: string; name: string; specialty: string; clinic: string }> }).specialists.length > 0 ? (
+              (output as { specialists: Array<{ id: string; name: string; specialty: string; clinic: string }> }).specialists.slice(0, 5).map((specialist) => (
                 <div key={specialist.id} className="rounded-lg border p-3 bg-background">
                   <div className="font-medium">{specialist.name}</div>
                   <div className="text-sm text-muted-foreground">
@@ -275,11 +280,11 @@ function ToolResultRenderer({ toolName, output }: { toolName: string; output: an
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
-            Available Appointments ({output.totalCount || 0})
+            Available Appointments ({(output as { totalCount?: number }).totalCount || 0})
           </div>
           <div className="grid gap-2">
-            {output.availability?.length > 0 ? (
-              output.availability.slice(0, 5).map((slot: any, index: number) => {
+            {(output as { availability?: Array<{ id: string; start: string; end: string; mode: string }> }).availability && (output as { availability: Array<{ id: string; start: string; end: string; mode: string }> }).availability.length > 0 ? (
+              (output as { availability: Array<{ id: string; start: string; end: string; mode: string }> }).availability.slice(0, 5).map((slot, index) => {
                 const startDate = new Date(slot.start);
                 const endDate = new Date(slot.end);
                 const dateStr = startDate.toLocaleDateString();
@@ -314,20 +319,20 @@ function ToolResultRenderer({ toolName, output }: { toolName: string; output: an
             <div className="flex items-center gap-2 mb-2">
               <div className="text-green-600">✅</div>
               <div className="font-medium text-green-800">
-                {output.success ? "Appointment Booked Successfully!" : "Booking Failed"}
+                {(output as { success?: boolean }).success ? "Appointment Booked Successfully!" : "Booking Failed"}
               </div>
             </div>
-            {output.appointment && (
+            {(output as { appointment?: { id: string; date: string; time: string; status: string } }).appointment && (
               <div className="text-sm text-green-700">
-                <div>Booking ID: {output.appointment.id}</div>
-                <div>Date: {output.appointment.date}</div>
-                <div>Time: {output.appointment.time}</div>
-                <div>Status: {output.appointment.status}</div>
+                <div>Booking ID: {(output as { appointment: { id: string; date: string; time: string; status: string } }).appointment.id}</div>
+                <div>Date: {(output as { appointment: { id: string; date: string; time: string; status: string } }).appointment.date}</div>
+                <div>Time: {(output as { appointment: { id: string; date: string; time: string; status: string } }).appointment.time}</div>
+                <div>Status: {(output as { appointment: { id: string; date: string; time: string; status: string } }).appointment.status}</div>
               </div>
             )}
-            {output.message && (
+            {(output as { message?: string }).message && (
               <div className="text-sm text-green-600 mt-2">
-                {output.message}
+                {(output as { message: string }).message}
               </div>
             )}
           </div>

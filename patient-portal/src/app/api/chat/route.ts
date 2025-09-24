@@ -198,11 +198,11 @@ export async function POST(req: NextRequest) {
           }
 
           // Handle both content and parts properly
-          let parts: any[] = [];
+          let parts: Array<{ type: string; text?: string; [key: string]: unknown }> = [];
           
           if (msg.parts && Array.isArray(msg.parts)) {
             // Use the parts directly if they exist - this includes tool calls
-            parts = msg.parts;
+            parts = msg.parts as Array<{ type: string; text?: string; [key: string]: unknown }>;
           } else if (typeof msg.content === "string") {
             // Convert string content to text part
             parts = [{ type: "text", text: msg.content }];
@@ -212,13 +212,13 @@ export async function POST(req: NextRequest) {
           }
 
           return {
-            id: (msg as any).id || `msg-${Date.now()}-${index}`,
+            id: (msg as { id?: string }).id || `msg-${Date.now()}-${index}`,
             role: role as "user" | "assistant",
             parts: parts,
           };
         });
 
-        const modelMessages = convertToModelMessages(uiMessages);
+        const modelMessages = convertToModelMessages(uiMessages as Parameters<typeof convertToModelMessages>[0]);
         
         // Add system prompt as the first message
         modelMessages.unshift({ role: "system" as const, content: systemPrompt });
