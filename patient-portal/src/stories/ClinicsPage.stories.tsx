@@ -52,7 +52,6 @@ export const FilteredResults: Story = {
 };
 
 export const EmptyState: Story = {
-  name: 'Empty State',
   parameters: {
     docs: {
       description: {
@@ -77,7 +76,6 @@ export const Mobile: Story = {
 };
 
 export const DarkMode: Story = {
-  name: 'Dark Mode',
   parameters: {
     backgrounds: {
       default: 'dark',

@@ -30,7 +30,6 @@ export const Default: Story = {
 };
 
 export const WithUpcomingAppointment: Story = {
-  name: 'With Upcoming Appointment',
   parameters: {
     docs: {
       description: {
@@ -41,7 +40,6 @@ export const WithUpcomingAppointment: Story = {
 };
 
 export const NoUpcomingAppointments: Story = {
-  name: 'No Upcoming Appointments',
   parameters: {
     docs: {
       description: {
@@ -88,7 +86,6 @@ export const Mobile: Story = {
 };
 
 export const DarkMode: Story = {
-  name: 'Dark Mode',
   parameters: {
     backgrounds: {
       default: 'dark',

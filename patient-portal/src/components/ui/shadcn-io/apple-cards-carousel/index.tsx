@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import React, {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useRef,
@@ -167,10 +168,10 @@ export const Card = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { onCardClose, currentIndex } = useContext(CarouselContext);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
     onCardClose(index);
-  };
+  }, [onCardClose, index]);
 
   const handleOpen = () => {
     setOpen(true);

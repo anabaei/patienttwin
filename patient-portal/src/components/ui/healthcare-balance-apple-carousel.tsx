@@ -3,7 +3,7 @@
 import { useOnClickOutside } from '@/hooks/use-on-click-outside';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Activity, AlertCircle, Brain, Calendar, DollarSign, Leaf, Sparkles, Waves, X, Zap } from 'lucide-react';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Badge } from './badge';
 import { Button } from './button';
 import { Carousel, CarouselContext } from './shadcn-io/apple-cards-carousel';
@@ -334,10 +334,10 @@ const HealthcareCard = ({
     const gradient = getBackgroundGradient(balance.type);
     const illustration = getVectorIllustration(balance.type);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setOpen(false);
         onCardClose(index);
-    };
+    }, [onCardClose, index]);
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
