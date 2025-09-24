@@ -1,31 +1,12 @@
-export interface HealthcareBalance {
-    id: string;
-    type: 'massage-therapist' | 'chiropractor' | 'psychologist' | 'physiotherapist' | 'acupuncturist' | 'dietician' | 'audiologist' | 'occupational-therapist' | 'osteopath' | 'podiatrist' | 'speech-therapist' | 'naturopath' | 'other';
-    name: string;
-    amount: number;
-    expiryDate: string;
-    renewalDate: string;
-    description: string;
-    iconName: string;
-    color: string;
-    status: 'active' | 'expiring' | 'expired';
-    usageHistory: {
-        date: string;
-        service: string;
-        amount: number;
-        provider: string;
-    }[];
-    benefits: string[];
-    coverage: {
-        maxPerSession: number;
-        maxPerYear: number;
-        copay: number;
-    };
-}
-interface HealthcareBalancesState {
+import type { HealthcareBalance } from '../types';
+interface HealthcareBalancesStore {
     balances: HealthcareBalance[];
+    isLoading: boolean;
+    error: string | null;
     getBalanceById: (id: string) => HealthcareBalance | undefined;
     getBalancesByType: (type: HealthcareBalance['type']) => HealthcareBalance[];
+    fetchBalances: () => Promise<void>;
+    setBalances: (balances: HealthcareBalance[]) => void;
 }
-export declare const useHealthcareBalancesStore: import("zustand").UseBoundStore<import("zustand").StoreApi<HealthcareBalancesState>>;
+export declare const useHealthcareBalancesStore: import("zustand").UseBoundStore<import("zustand").StoreApi<HealthcareBalancesStore>>;
 export {};

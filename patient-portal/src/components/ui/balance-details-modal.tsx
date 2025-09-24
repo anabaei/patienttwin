@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,7 +75,10 @@ interface BalanceDetailsModalProps {
 }
 
 export function BalanceDetailsModal({ balanceId, children }: BalanceDetailsModalProps) {
-  const { getBalanceById } = useHealthcareBalancesStore();
+  const { getBalanceById, fetchBalances } = useHealthcareBalancesStore();
+  useEffect(() => {
+    void fetchBalances();
+  }, [fetchBalances]);
   const balance = getBalanceById(balanceId);
   const router = useRouter();
   

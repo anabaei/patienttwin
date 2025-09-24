@@ -1,4 +1,4 @@
-export type { HealthcareBalance } from './stores/healthcare-balances';
+export type { HealthcareBalance } from './types';
 export * from './types';
 export { useAppointmentsStore } from './stores/appointments';
 export { useAuthStore } from './stores/auth';
@@ -12,3 +12,4 @@ export { useNavigationStore } from './stores/navigation';
 export { useSettingsStore } from './stores/settings';
 export * from './utils/availability';
 export * from './utils/geo';
+export * from './mocks';

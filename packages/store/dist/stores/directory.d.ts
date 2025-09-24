@@ -14,6 +14,7 @@ interface DirectoryActions {
     getSpecialistsByClinic: (clinicId: string) => SpecialistSummary[];
     getAvailability: (params: AvailabilityParams) => AvailabilitySlot[];
     clearError: () => void;
+    fetchDirectory: () => Promise<void>;
 }
 type DirectoryStore = DirectoryState & DirectoryActions;
 export declare const useDirectoryStore: import("zustand").UseBoundStore<import("zustand").StoreApi<DirectoryStore>>;

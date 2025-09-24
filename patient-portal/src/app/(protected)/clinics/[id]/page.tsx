@@ -66,17 +66,32 @@ export default function ClinicDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const clinicId = params.id as string;
-  const { clinics, servicesByClinic, getSpecialistsByClinic } = useDirectoryStore();
+  const {
+    clinics,
+    servicesByClinic,
+    getSpecialistsByClinic,
+    fetchDirectory,
+    isLoading: isDirectoryLoading,
+  } = useDirectoryStore();
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    void fetchDirectory();
+  }, [fetchDirectory]);
 
   // Simulate data loading
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (isDirectoryLoading) {
+      setIsLoading(true);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
       setIsLoading(false);
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, []);
+    }, 600);
+
+    return () => window.clearTimeout(timer);
+  }, [isDirectoryLoading]);
 
   const clinic = clinics.find(c => c.id === clinicId);
   const services = servicesByClinic[clinicId] || [];

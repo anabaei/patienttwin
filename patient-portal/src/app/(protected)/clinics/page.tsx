@@ -28,7 +28,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 export default function ClinicsPage() {
-  const { clinics, servicesByClinic } = useDirectoryStore();
+  const { clinics, servicesByClinic, fetchDirectory, isLoading: isDirectoryLoading } = useDirectoryStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("distance");
@@ -37,6 +37,10 @@ export default function ClinicsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
+  useEffect(() => {
+    void fetchDirectory();
+  }, [fetchDirectory]);
+
   // Transform store data to match UI requirements
   const clinicsWithServices = clinics.map(clinic => {
     const services = servicesByClinic[clinic.id] || [];
@@ -69,12 +73,17 @@ export default function ClinicsPage() {
   
   // Simulate data loading
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (isDirectoryLoading) {
+      setIsLoading(true);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
       setIsLoading(false);
-    }, 600);
-    
-    return () => clearTimeout(timer);
-  }, []);
+    }, 450);
+
+    return () => window.clearTimeout(timer);
+  }, [isDirectoryLoading]);
 
   const serviceOptions: MultiSelectOption[] = [
     { value: "massage", label: "Massage Therapy" },

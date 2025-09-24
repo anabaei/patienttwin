@@ -1,7 +1,7 @@
 // Main export file for @twinn/store package
 
 // Types
-export type { HealthcareBalance } from './stores/healthcare-balances';
+export type { HealthcareBalance } from './types';
 export * from './types';
 
 // Stores
@@ -20,3 +20,5 @@ export { useSettingsStore } from './stores/settings';
 export * from './utils/availability';
 export * from './utils/geo';
 
+// Mock data
+export * from './mocks';

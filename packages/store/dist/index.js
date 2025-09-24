@@ -13,3 +13,5 @@ export { useSettingsStore } from './stores/settings';
 // Utilities
 export * from './utils/availability';
 export * from './utils/geo';
+// Mock data
+export * from './mocks';

@@ -216,7 +216,15 @@ const getClinicImage = (clinicId: string): string => {
 export default function BookPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { clinics, servicesByClinic, serviceOptionsByService, getSpecialistsByClinic, getAvailability } = useDirectoryStore();
+  const {
+    clinics,
+    servicesByClinic,
+    serviceOptionsByService,
+    getSpecialistsByClinic,
+    getAvailability,
+    fetchDirectory,
+    isLoading: isDirectoryLoading,
+  } = useDirectoryStore();
   const [currentStep, setCurrentStep] = useState<BookingStep>('clinic');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClinic, setSelectedClinic] = useState<string | null>(null);
@@ -235,6 +243,10 @@ export default function BookPage() {
   const [selectedRemainingPayment, setSelectedRemainingPayment] = useState<string>('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    void fetchDirectory();
+  }, [fetchDirectory]);
+
   // Initialize from URL params
   useEffect(() => {
     const clinicId = searchParams.get('clinicId');
@@ -250,12 +262,17 @@ export default function BookPage() {
       }
     }
     
-    const timer = setTimeout(() => {
+    if (isDirectoryLoading) {
+      setIsLoading(true);
+      return () => undefined;
+    }
+
+    const timer = window.setTimeout(() => {
       setIsLoading(false);
     }, 600);
     
-    return () => clearTimeout(timer);
-  }, [searchParams]);
+    return () => window.clearTimeout(timer);
+  }, [searchParams, isDirectoryLoading]);
 
   // Scroll to top when step changes
   useEffect(() => {

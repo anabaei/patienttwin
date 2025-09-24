@@ -158,6 +158,30 @@ export interface AvailabilitySlot {
     end: string;
     mode: 'in-person' | 'telehealth';
 }
+export interface HealthcareBalance {
+    id: string;
+    type: 'massage-therapist' | 'chiropractor' | 'psychologist' | 'physiotherapist' | 'acupuncturist' | 'dietician' | 'audiologist' | 'occupational-therapist' | 'osteopath' | 'podiatrist' | 'speech-therapist' | 'naturopath' | 'other';
+    name: string;
+    amount: number;
+    expiryDate: string;
+    renewalDate: string;
+    description: string;
+    iconName: string;
+    color: string;
+    status: 'active' | 'expiring' | 'expired';
+    usageHistory: {
+        date: string;
+        service: string;
+        amount: number;
+        provider: string;
+    }[];
+    benefits: string[];
+    coverage: {
+        maxPerSession: number;
+        maxPerYear: number;
+        copay: number;
+    };
+}
 export interface SpecialistSummary {
     userId: string;
     clinicIds: string[];

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { BalanceDetailsModal } from "@/components/ui/balance-details-modal";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -61,7 +63,11 @@ const getStatusBadge = (status: HealthcareBalance['status']) => {
 
 
 export function DashboardHealthcareCarousel() {
-  const { balances } = useHealthcareBalancesStore();
+  const { balances, fetchBalances } = useHealthcareBalancesStore();
+
+  useEffect(() => {
+    void fetchBalances();
+  }, [fetchBalances]);
   
   
   // Filter to show only the main services for dashboard (massage-therapist, chiropractor, psychologist, other)
