@@ -17,8 +17,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useChatStore } from "@twinn/store";
-import { DataStreamProvider } from "./data-stream-provider";
 import { Message } from "./message";
+
 
 const formatPathLabel = (path: string) => {
   if (!path || path === "/") {
@@ -46,7 +46,7 @@ const createWelcomeMessage = (): UIMessage => ({
   ],
 });
 
-export function ChatSheet() {
+function ChatSheetContent() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const isOpen = useChatStore((state) => state.isOpen);
   const setOpen = useChatStore((state) => state.setOpen);
@@ -113,51 +113,50 @@ export function ChatSheet() {
   };
 
   return (
-    <DataStreamProvider>
-      <Sheet open={isOpen} onOpenChange={setOpen}>
-        <SheetContent
-          side="bottom"
-          className={cn(
-            "h-[88vh] max-h-[calc(100vh-4rem)] w-full gap-0 rounded-t-3xl border-t border-border p-0",
-            "pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
-          )}
-        >
-          <div className="flex h-full flex-col">
-            <SheetHeader className="border-b border-border px-6 pb-4 pt-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <BrainCog className="h-6 w-6" />
-                </div>
-                <div className="flex flex-col">
-                  <SheetTitle className="text-base font-semibold">Care Assistant</SheetTitle>
-                  <SheetDescription className="text-xs text-muted-foreground">
-                    Currently viewing: {sectionLabel}
-                  </SheetDescription>
-                </div>
+    <Sheet open={isOpen} onOpenChange={setOpen}>
+      <SheetContent
+        side="bottom"
+        className={cn(
+          "h-[88vh] max-h-[calc(100vh-4rem)] w-full gap-0 rounded-t-3xl border-t border-border p-0",
+          "pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+        )}
+      >
+        <div className="flex h-full flex-col">
+          <SheetHeader className="border-b border-border px-6 pb-4 pt-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <BrainCog className="h-6 w-6" />
               </div>
-            </SheetHeader>
-
-            <div className="flex-1 overflow-hidden">
-              <div className="h-full overflow-y-auto px-6 py-5 space-y-4">
-                {messages.map((message) => (
-                  <Message 
-                    key={message.id} 
-                    message={message} 
-                    isLoading={status === "streaming" && messages.length - 1 === messages.indexOf(message)}
-                    isReadonly={false}
-                  />
-                ))}
-                {status === "streaming" && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Thinking...
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
+              <div className="flex flex-col">
+                <SheetTitle className="text-base font-semibold">Care Assistant</SheetTitle>
+                <SheetDescription className="text-xs text-muted-foreground">
+                  Currently viewing: {sectionLabel}
+                </SheetDescription>
               </div>
             </div>
+          </SheetHeader>
 
-            <div className="border-t border-border px-6 pt-4">
+          <div className="flex-1 overflow-hidden">
+            <div className="h-full overflow-y-auto px-6 py-5 space-y-4">
+              {messages.map((message) => (
+                <Message 
+                  key={message.id} 
+                  message={message} 
+                  isLoading={status === "streaming" && messages.length - 1 === messages.indexOf(message)}
+                  isReadonly={false}
+                />
+              ))}
+              {status === "streaming" && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Thinking...
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+          </div>
+
+          <div className="border-t border-border px-6 pt-4">
               <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
                 <span>Early access · Responses use simulated Twinn data.</span>
                 <Button
@@ -189,8 +188,11 @@ export function ChatSheet() {
           </div>
         </SheetContent>
       </Sheet>
-    </DataStreamProvider>
-  );
+    );
+}
+
+export function ChatSheet() {
+  return <ChatSheetContent />;
 }
 
 

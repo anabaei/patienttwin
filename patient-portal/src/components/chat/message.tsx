@@ -1,10 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, sanitizeText } from "@/lib/utils";
 import type { UIMessage } from "ai";
 import { motion } from "framer-motion";
 import { memo, useState } from "react";
-import { useDataStream } from "./data-stream-provider";
+import { MessageContent } from "./elements/message";
+import { Response } from "./elements/response";
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "./elements/tool";
 import { MessageActions } from "./message-actions";
 
@@ -19,8 +20,6 @@ const PureMessage = ({
 }) => {
   const [mode, setMode] = useState<"view" | "edit">("view");
   const isUser = message.role === "user";
-
-  useDataStream();
 
   return (
     <motion.div
@@ -53,11 +52,11 @@ const PureMessage = ({
               if (mode === "view") {
                 return (
                   <div key={key}>
-                    <div
+                    <MessageContent
                       className={cn({
                         "w-fit break-words rounded-2xl px-3 py-2 text-right text-white":
                           isUser,
-                        "bg-transparent px-0 py-0 text-left": !isUser,
+                        "bg-transparent px-4 py-3 text-left": !isUser,
                       })}
                       style={
                         isUser
@@ -65,8 +64,8 @@ const PureMessage = ({
                           : undefined
                       }
                     >
-                      <div className="whitespace-pre-wrap">{part.text}</div>
-                    </div>
+                      <Response>{sanitizeText(part.text)}</Response>
+                    </MessageContent>
                   </div>
                 );
               }
@@ -172,25 +171,208 @@ const PureMessage = ({
 // Component to render tool results in a user-friendly way
 function ToolResultRenderer({ toolName, output }: { toolName: string; output: unknown }) {
   switch (toolName) {
+    case "findCareRecommendations": {
+      const data = output as {
+        assistantSummary?: string;
+        assistantHighlights?: string[];
+        assistantNextSteps?: string;
+        optionSummaries?: Array<{
+          id: string;
+          summary: string;
+          budgetFit: string;
+          estimatedOutOfPocket?: string;
+          availability?: string;
+          coverage?: string;
+        }>;
+        recommendations?: Array<{
+          specialist: { id: string; name: string; specialty: string };
+          clinic?: { name?: string; address?: string; city?: string };
+          pricing: { formattedEstimatedOutOfPocket?: string };
+          availability?: { start: string };
+          coverage?: { balanceType: string; expiryDate?: string };
+        }>;
+      };
+
+      return (
+        <div className="space-y-3">
+          {data.assistantSummary && (
+            <div className="font-medium text-sm">{data.assistantSummary}</div>
+          )}
+          {data.assistantHighlights && data.assistantHighlights.length > 0 && (
+            <ul className="list-disc pl-4 text-xs text-muted-foreground space-y-1">
+              {data.assistantHighlights.map((highlight, index) => (
+                <li key={index}>{highlight}</li>
+              ))}
+            </ul>
+          )}
+          {data.optionSummaries && data.optionSummaries.length > 0 && (
+            <div className="space-y-2">
+              {data.optionSummaries.slice(0, 3).map((option) => (
+                <div key={option.id} className="rounded-lg border bg-background p-3">
+                  <div className="font-medium text-sm">{option.summary}</div>
+                  <div className="text-xs text-muted-foreground space-y-1 mt-1">
+                    <div>{option.budgetFit}</div>
+                    {option.estimatedOutOfPocket && (
+                      <div>Out-of-pocket: {option.estimatedOutOfPocket}</div>
+                    )}
+                    {option.availability && <div>Next slot: {option.availability}</div>}
+                    {option.coverage && <div>Coverage: {option.coverage}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {data.assistantNextSteps && (
+            <div className="rounded-md bg-muted/50 p-2 text-xs">
+              Next step: {data.assistantNextSteps}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    case "getBalanceDetails": {
+      const data = output as {
+        assistantSummary?: string;
+        assistantHighlights?: string[];
+        assistantNextSteps?: string;
+        matchSummaries?: Array<{
+          id: string;
+          name: string;
+          remaining?: string;
+          expiry?: string;
+          alerts?: string[];
+          status?: string;
+        }>;
+      };
+
+      return (
+        <div className="space-y-3">
+          {data.assistantSummary && (
+            <div className="font-medium text-sm">{data.assistantSummary}</div>
+          )}
+          {data.assistantHighlights && data.assistantHighlights.length > 0 && (
+            <ul className="list-disc pl-4 text-xs text-muted-foreground space-y-1">
+              {data.assistantHighlights.map((highlight, index) => (
+                <li key={index}>{highlight}</li>
+              ))}
+            </ul>
+          )}
+          {data.matchSummaries && data.matchSummaries.length > 0 && (
+            <div className="space-y-2">
+              {data.matchSummaries.slice(0, 3).map((match) => (
+                <div key={match.id} className="rounded-lg border bg-background p-3">
+                  <div className="font-medium text-sm">{match.name}</div>
+                  <div className="text-xs text-muted-foreground space-y-1 mt-1">
+                    {match.remaining && <div>Remaining: {match.remaining}</div>}
+                    {match.expiry && <div>Expiry: {match.expiry}</div>}
+                    {match.status && <div>Status: {match.status}</div>}
+                    {match.alerts && match.alerts.length > 0 && (
+                      <ul className="list-disc pl-4 space-y-1">
+                        {match.alerts.map((alert, idx) => (
+                          <li key={idx}>{alert}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {data.assistantNextSteps && (
+            <div className="rounded-md bg-muted/50 p-2 text-xs">
+              Next step: {data.assistantNextSteps}
+            </div>
+          )}
+        </div>
+      );
+    }
+
     case "getBalances":
       return (
         <div className="space-y-2">
           <div className="text-xs text-muted-foreground">
             Healthcare Balances ({(output as { totalCount?: number }).totalCount || 0})
           </div>
+          {(output as { assistantSummary?: string }).assistantSummary && (
+            <div className="rounded-md bg-muted/50 p-3 text-sm">
+              {(output as { assistantSummary: string }).assistantSummary}
+            </div>
+          )}
+          {(output as { assistantHighlights?: string[] }).assistantHighlights &&
+            (output as { assistantHighlights: string[] }).assistantHighlights.length > 0 && (
+              <ul className="list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+                {(output as { assistantHighlights: string[] }).assistantHighlights.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            )}
           <div className="grid gap-2">
-            {(output as { balances?: Array<{ id: string; name: string; amount: number; description: string }> }).balances && (output as { balances: Array<{ id: string; name: string; amount: number; description: string }> }).balances.length > 0 ? (
-              (output as { balances: Array<{ id: string; name: string; amount: number; description: string }> }).balances.slice(0, 5).map((balance) => (
-                <div key={balance.id} className="rounded-lg border p-3 bg-background">
-                  <div className="font-medium">{balance.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    ${balance.amount} remaining
+            {(output as { balances?: Array<{ id: string; name: string; remainingAmount: number; totalUsed: number; description: string; expiryDate: string; renewalDate: string; status: string }> }).balances && (output as { balances: Array<{ id: string; name: string; remainingAmount: number; totalUsed: number; description: string; expiryDate: string; renewalDate: string; status: string }> }).balances.length > 0 ? (
+              (output as { balances: Array<{ id: string; name: string; remainingAmount: number; totalUsed: number; description: string; expiryDate: string; renewalDate: string; status: string }> }).balances.slice(0, 5).map((balance) => {
+                const formatDateDisplay = (iso?: string) => {
+                  if (!iso) return undefined;
+                  const date = new Date(iso);
+                  if (isNaN(date.getTime())) return undefined;
+                  return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  });
+                };
+
+                const calculateDaysUntil = (isoDate: string) => {
+                  const target = new Date(isoDate);
+                  if (isNaN(target.getTime())) return undefined;
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  target.setHours(0, 0, 0, 0);
+                  const diffMs = target.getTime() - today.getTime();
+                  return Math.round(diffMs / 86_400_000);
+                };
+
+                const daysUntilExpiry = calculateDaysUntil(balance.expiryDate);
+                const isExpired = daysUntilExpiry !== undefined && daysUntilExpiry < 0;
+                const isExpiringSoon = daysUntilExpiry !== undefined && daysUntilExpiry >= 0 && daysUntilExpiry <= 45;
+
+                return (
+                  <div key={balance.id} className="rounded-lg border p-3 bg-background">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">{balance.name}</div>
+                      <div className={`text-xs px-2 py-1 rounded-full ${
+                        isExpired ? 'bg-red-100 text-red-800' :
+                        isExpiringSoon ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {isExpired ? 'Expired' : 
+                         isExpiringSoon ? 'Expiring Soon' : 
+                         'Active'}
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      ${balance.remainingAmount} remaining
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {balance.description}
+                    </div>
+                    {balance.totalUsed > 0 && (
+                      <div className="text-xs text-muted-foreground">
+                        Used: ${balance.totalUsed}
+                      </div>
+                    )}
+                    <div className="text-xs text-muted-foreground mt-2">
+                      Expires: {formatDateDisplay(balance.expiryDate) || 'No expiry date'}
+                      {daysUntilExpiry !== undefined && !isExpired && (
+                        <span className="ml-2">
+                          ({daysUntilExpiry === 0 ? 'Today' : 
+                            daysUntilExpiry === 1 ? 'Tomorrow' : 
+                            `${daysUntilExpiry} days`})
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {balance.description}
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-sm text-muted-foreground">No balances found</div>
             )}

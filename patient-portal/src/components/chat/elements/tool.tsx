@@ -74,6 +74,8 @@ export const ToolHeader = ({
   // Convert technical tool type to user-friendly name
   const getToolDisplayName = (toolType: string) => {
     const toolNames: Record<string, string> = {
+      "tool-findCareRecommendations": "Care Matches",
+      "tool-getBalanceDetails": "Balance Insights",
       "tool-getBalances": "Healthcare Benefits",
       "tool-getClinics": "Clinic Locations", 
       "tool-getServices": "Available Services",
@@ -88,6 +90,8 @@ export const ToolHeader = ({
   // Get contextual icon based on tool type
   const getToolIcon = (toolType: string) => {
     const iconMap: Record<string, ReactNode> = {
+      "Care Matches": <Stethoscope className="size-4" />, 
+      "Balance Insights": <CreditCard className="size-4" />,
       "Healthcare Benefits": <CreditCard className="size-4" />,
       "Clinic Locations": <MapPin className="size-4" />,
       "Available Services": <Heart className="size-4" />,
