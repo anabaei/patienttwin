@@ -1,4 +1,5 @@
 {
+  "framework": "nextjs",
   "buildCommand": "cd ../packages/store && npm run build && cd ../../patient-portal && pnpm build",
   "installCommand": "cd .. && pnpm install && cd patient-portal"
 }
