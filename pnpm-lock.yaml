@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  next: 15.5.9
+  eslint-config-next: 15.5.9
+
 importers:
 
   .: {}
@@ -2262,7 +2266,7 @@ packages:
     resolution: {integrity: sha512-SBTzL9zW+STU9jSl5EpUFzZ+fZCJdmQtBqFycLyrF+pOGY1QTw1LqQ2bCh8p0fL87j6YsT1B1GObUgo9DTo/XA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      next: ^14.1.0 || ^15.0.0
+      next: 15.5.9
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
       storybook: ^9.1.5

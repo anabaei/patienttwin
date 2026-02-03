@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "TwinnLinks Patient Portal - Healthcare booking and appointment management",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "next": "15.5.9",
+      "eslint-config-next": "15.5.9"
+    }
+  },
   "scripts": {
     "dev": "pnpm --filter patient-portal dev",
     "build": "pnpm --filter @twinn/store build && pnpm --filter patient-portal build",
