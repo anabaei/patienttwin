@@ -334,7 +334,6 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="font-semibold">For Patients</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/clinics" className="hover:text-primary">Find Clinics</Link></li>
                 <li><Link href="/book" className="hover:text-primary">Book Appointment</Link></li>
                 <li><Link href="/insurance" className="hover:text-primary">Insurance</Link></li>
                 <li><Link href="/dashboard" className="hover:text-primary">Dashboard</Link></li>

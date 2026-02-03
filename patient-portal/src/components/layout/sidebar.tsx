@@ -7,7 +7,6 @@ import { useAuthStore } from "@twinn/store";
 import {
     Calendar,
     Home,
-    MapPin,
     Settings,
     Shield,
     Wallet
@@ -23,16 +22,10 @@ const navigationItems = [
     description: "Overview and quick actions"
   },
   {
-    name: "Find Clinics",
-    href: "/clinics",
-    icon: MapPin,
-    description: "Search and browse clinics"
-  },
-  {
     name: "Book Appointment",
     href: "/book",
     icon: Calendar,
-    description: "Schedule your appointment"
+    description: "Find clinics and schedule your appointment"
   },
   {
     name: "My Appointments",

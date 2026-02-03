@@ -418,21 +418,6 @@ export default function SettingsPage() {
 
           <Separator />
 
-          {/* Delete Account */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label className="text-base font-medium flex items-center gap-2 text-destructive">
-                <Trash2 className="h-4 w-4" />
-                Delete Account
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Permanently delete your account and all data
-              </p>
-            </div>
-            <Button variant="destructive" onClick={deleteAccount}>
-              Delete
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>

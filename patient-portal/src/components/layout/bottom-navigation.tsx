@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useNavigationStore } from "@twinn/store";
-import { Calendar, Home, MapPin, Shield } from "lucide-react";
+import { Calendar, Home, Shield } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -12,12 +12,6 @@ const bottomNavItems = [
     href: "/dashboard",
     icon: Home,
     label: "Dashboard"
-  },
-  {
-    name: "Clinics",
-    href: "/clinics",
-    icon: MapPin,
-    label: "Find Clinics"
   },
   {
     name: "Book",
@@ -43,7 +37,7 @@ export function BottomNavigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border safe-bottom md:hidden shadow-lg">
-      <div className="grid grid-cols-4 h-16">
+      <div className="grid grid-cols-3 h-16">
         {bottomNavItems.map((item) => {
           const isActive = pathname === item.href;
           return (
